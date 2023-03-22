@@ -1,0 +1,10 @@
+# Composer
+/composer.lock
+/vendor/*
+
+# PHPUnit
+/coverage/*
+/.phpunit.result.cache
+
+# Laravel Stubs
+/laravel/vendor
