@@ -42,19 +42,14 @@
         "mockery/mockery": "^1.4.4",
         "orchestra/canvas": "^6.1",
         "phpunit/phpunit": "^8.5.21 || ^9.5.10",
-        "spatie/laravel-ray": "^1.7.1",
         "symfony/process": "^5.0"
     },
     "suggest": {
-        "laravel/framework": "Required for testing (^8.75).",
-        "mockery/mockery": "Allow using Mockery for testing (^1.4.4).",
-        "orchestra/testbench-browser-kit": "Allow using legacy Laravel BrowserKit for testing (^6.0).",
-        "orchestra/testbench-dusk": "Allow using Laravel Dusk for testing (^6.0).",
-        "phpunit/phpunit": "Allow using PHPUnit for testing (^8.5.21|^9.5.10|^10.0)."
+
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "6.0-dev"
+            "dev-master": "dev"
         }
     },
     "scripts": {
