@@ -30,6 +30,6 @@ class ConfigTest extends TestCase
     /** @test */
     public function it_loads_config_helper()
     {
-        $this->assertEquals('testbench', config('database.default'));
+        $this->assertEquals('testbench', ws_config('database.default'));
     }
 }

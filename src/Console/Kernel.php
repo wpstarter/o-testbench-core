@@ -21,7 +21,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        if (file_exists($console = base_path('routes/console.php'))) {
+        if (file_exists($console = ws_base_path('routes/console.php'))) {
             require $console;
         }
     }

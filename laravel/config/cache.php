@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('CACHE_DRIVER', 'array'),
+    'default' => ws_env('CACHE_DRIVER', 'array'),
 
     /*
     |--------------------------------------------------------------------------
@@ -51,23 +51,23 @@ return [
 
         'file' => [
             'driver' => 'file',
-            'path' => storage_path('framework/cache/data'),
+            'path' => ws_storage_path('framework/cache/data'),
         ],
 
         'memcached' => [
             'driver' => 'memcached',
-            'persistent_id' => env('MEMCACHED_PERSISTENT_ID'),
+            'persistent_id' => ws_env('MEMCACHED_PERSISTENT_ID'),
             'sasl' => [
-                env('MEMCACHED_USERNAME'),
-                env('MEMCACHED_PASSWORD'),
+                ws_env('MEMCACHED_USERNAME'),
+                ws_env('MEMCACHED_PASSWORD'),
             ],
             'options' => [
                 // Memcached::OPT_CONNECT_TIMEOUT => 2000,
             ],
             'servers' => [
                 [
-                    'host' => env('MEMCACHED_HOST', '127.0.0.1'),
-                    'port' => env('MEMCACHED_PORT', 11211),
+                    'host' => ws_env('MEMCACHED_HOST', '127.0.0.1'),
+                    'port' => ws_env('MEMCACHED_PORT', 11211),
                     'weight' => 100,
                 ],
             ],
@@ -81,11 +81,11 @@ return [
 
         'dynamodb' => [
             'driver' => 'dynamodb',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
-            'table' => env('DYNAMODB_CACHE_TABLE', 'cache'),
-            'endpoint' => env('DYNAMODB_ENDPOINT'),
+            'key' => ws_env('AWS_ACCESS_KEY_ID'),
+            'secret' => ws_env('AWS_SECRET_ACCESS_KEY'),
+            'region' => ws_env('AWS_DEFAULT_REGION', 'us-east-1'),
+            'table' => ws_env('DYNAMODB_CACHE_TABLE', 'cache'),
+            'endpoint' => ws_env('DYNAMODB_ENDPOINT'),
         ],
 
         'octane' => [
@@ -105,6 +105,6 @@ return [
     |
     */
 
-    'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache'),
+    'prefix' => ws_env('CACHE_PREFIX', Str::slug(ws_env('APP_NAME', 'laravel'), '_').'_cache'),
 
 ];

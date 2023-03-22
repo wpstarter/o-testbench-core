@@ -228,7 +228,7 @@ trait CreatesApplication
      */
     protected function resolveApplication()
     {
-        return tap(new Application($this->getBasePath()), function ($app) {
+        return ws_tap(new Application($this->getBasePath()), function ($app) {
             $app->bind(
                 'WpStarter\Foundation\Bootstrap\LoadConfiguration',
                 'Orchestra\Testbench\Bootstrap\LoadConfiguration'
@@ -252,7 +252,7 @@ trait CreatesApplication
 
         $app->make('WpStarter\Foundation\Bootstrap\LoadConfiguration')->bootstrap($app);
 
-        tap($this->getApplicationTimezone($app), static function ($timezone) {
+        ws_tap($this->getApplicationTimezone($app), static function ($timezone) {
             ! \is_null($timezone) && date_default_timezone_set($timezone);
         });
 

@@ -13,7 +13,7 @@ unset($APP_KEY, $DB_CONNECTION, $config);
 
 $router = $app->make('router');
 
-collect(glob(__DIR__.'/../routes/testbench-*.php'))
+ws_collect(glob(__DIR__.'/../routes/testbench-*.php'))
     ->each(function ($routeFile) use ($app, $router) {
         require $routeFile;
     });

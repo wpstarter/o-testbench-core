@@ -126,7 +126,7 @@ class Commander
      */
     protected function resolveApplication()
     {
-        return tap($this->resolveApplicationFromTrait(), function ($app) {
+        return ws_tap($this->resolveApplicationFromTrait(), function ($app) {
             $this->createDotenv()->load();
 
             $app->register(TestbenchServiceProvider::class);
@@ -164,7 +164,7 @@ class Commander
         $laravelBasePath = $this->config['laravel'] ?? null;
 
         if (! \is_null($laravelBasePath)) {
-            return tap(str_replace('./', $this->workingPath.'/', $laravelBasePath), static function ($path) {
+            return ws_tap(str_replace('./', $this->workingPath.'/', $laravelBasePath), static function ($path) {
                 $_ENV['APP_BASE_PATH'] = $path;
             });
         }
@@ -179,7 +179,7 @@ class Commander
     {
         $workingVendorPath = $this->workingPath.'/vendor';
 
-        tap($this->resolveApplication(), static function ($laravel) use ($workingVendorPath) {
+        ws_tap($this->resolveApplication(), static function ($laravel) use ($workingVendorPath) {
             $filesystem = new Filesystem();
 
             $laravelVendorPath = $laravel->basePath('vendor');
@@ -244,7 +244,7 @@ class Commander
     {
         $laravel = $this->laravel();
 
-        tap($laravel->make(ExceptionHandler::class), static function ($handler) use ($error, $output) {
+        ws_tap($laravel->make(ExceptionHandler::class), static function ($handler) use ($error, $output) {
             $handler->report($error);
             $handler->renderForConsole($output, $error);
         });

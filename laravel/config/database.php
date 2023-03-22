@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => ws_env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -38,26 +38,26 @@ return [
         'testing' => [
             'driver' => 'sqlite',
             'database' => ':memory:',
-            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', false),
+            'foreign_key_constraints' => ws_env('DB_FOREIGN_KEYS', false),
         ],
 
         'sqlite' => [
             'driver' => 'sqlite',
-            'url' => env('DATABASE_URL'),
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'url' => ws_env('DATABASE_URL'),
+            'database' => ws_env('DB_DATABASE', ws_database_path('database.sqlite')),
             'prefix' => '',
-            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+            'foreign_key_constraints' => ws_env('DB_FOREIGN_KEYS', true),
         ],
 
         'mysql' => [
             'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
-            'unix_socket' => env('DB_SOCKET', ''),
+            'url' => ws_env('DATABASE_URL'),
+            'host' => ws_env('DB_HOST', '127.0.0.1'),
+            'port' => ws_env('DB_PORT', '3306'),
+            'database' => ws_env('DB_DATABASE', 'forge'),
+            'username' => ws_env('DB_USERNAME', 'forge'),
+            'password' => ws_env('DB_PASSWORD', ''),
+            'unix_socket' => ws_env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -65,18 +65,18 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                PDO::MYSQL_ATTR_SSL_CA => ws_env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'url' => ws_env('DATABASE_URL'),
+            'host' => ws_env('DB_HOST', '127.0.0.1'),
+            'port' => ws_env('DB_PORT', '5432'),
+            'database' => ws_env('DB_DATABASE', 'forge'),
+            'username' => ws_env('DB_USERNAME', 'forge'),
+            'password' => ws_env('DB_PASSWORD', ''),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
@@ -86,12 +86,12 @@ return [
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', 'localhost'),
-            'port' => env('DB_PORT', '1433'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'url' => ws_env('DATABASE_URL'),
+            'host' => ws_env('DB_HOST', 'localhost'),
+            'port' => ws_env('DB_PORT', '1433'),
+            'database' => ws_env('DB_DATABASE', 'forge'),
+            'username' => ws_env('DB_USERNAME', 'forge'),
+            'password' => ws_env('DB_PASSWORD', ''),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
@@ -125,27 +125,27 @@ return [
 
     'redis' => [
 
-        'client' => env('REDIS_CLIENT', 'phpredis'),
+        'client' => ws_env('REDIS_CLIENT', 'phpredis'),
 
         'options' => [
-            'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'cluster' => ws_env('REDIS_CLUSTER', 'redis'),
+            'prefix' => ws_env('REDIS_PREFIX', Str::slug(ws_env('APP_NAME', 'laravel'), '_').'_database_'),
         ],
 
         'default' => [
-            'url' => env('REDIS_URL'),
-            'host' => env('REDIS_HOST', '127.0.0.1'),
-            'password' => env('REDIS_PASSWORD', null),
-            'port' => env('REDIS_PORT', '6379'),
-            'database' => env('REDIS_DB', '0'),
+            'url' => ws_env('REDIS_URL'),
+            'host' => ws_env('REDIS_HOST', '127.0.0.1'),
+            'password' => ws_env('REDIS_PASSWORD', null),
+            'port' => ws_env('REDIS_PORT', '6379'),
+            'database' => ws_env('REDIS_DB', '0'),
         ],
 
         'cache' => [
-            'url' => env('REDIS_URL'),
-            'host' => env('REDIS_HOST', '127.0.0.1'),
-            'password' => env('REDIS_PASSWORD', null),
-            'port' => env('REDIS_PORT', '6379'),
-            'database' => env('REDIS_CACHE_DB', '1'),
+            'url' => ws_env('REDIS_URL'),
+            'host' => ws_env('REDIS_HOST', '127.0.0.1'),
+            'password' => ws_env('REDIS_PASSWORD', null),
+            'port' => ws_env('REDIS_PORT', '6379'),
+            'database' => ws_env('REDIS_CACHE_DB', '1'),
         ],
 
     ],

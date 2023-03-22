@@ -30,7 +30,7 @@ trait HandlesAnnotations
         }
 
         Collection::make(
-            rescue(function () use ($registry) {
+            ws_rescue(function () use ($registry) {
                 return $registry->forMethod(static::class, $this->getName(false))->symbolAnnotations();
             }, [], false)
         )->filter(static function ($actions, $key) use ($name) {

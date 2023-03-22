@@ -70,7 +70,7 @@ class MigrateWithLaravelTest extends TestCase
     public function runApplicationMigrations()
     {
         $this->callAfterResolving('migrator', function ($migrator) {
-            $migrator->path(base_path('migrations'));
+            $migrator->path(ws_base_path('migrations'));
         });
 
         $this->runLaravelMigrations(['--database' => 'testing']);

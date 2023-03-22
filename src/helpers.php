@@ -55,7 +55,7 @@ function container(?string $basePath = null)
  */
 function artisan(Contracts\TestCase $testbench, string $command, array $parameters = [])
 {
-    return tap($testbench->artisan($command, $parameters), function ($artisan) {
+    return ws_tap($testbench->artisan($command, $parameters), function ($artisan) {
         if ($artisan instanceof PendingCommand) {
             $artisan->run();
         }

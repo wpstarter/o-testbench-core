@@ -18,7 +18,7 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', 'array'),
+    'driver' => ws_env('SESSION_DRIVER', 'array'),
 
     /*
     |--------------------------------------------------------------------------
@@ -31,7 +31,7 @@ return [
     |
     */
 
-    'lifetime' => env('SESSION_LIFETIME', 120),
+    'lifetime' => ws_env('SESSION_LIFETIME', 120),
 
     'expire_on_close' => false,
 
@@ -59,7 +59,7 @@ return [
     |
     */
 
-    'files' => storage_path('framework/sessions'),
+    'files' => ws_storage_path('framework/sessions'),
 
     /*
     |--------------------------------------------------------------------------
@@ -72,7 +72,7 @@ return [
     |
     */
 
-    'connection' => env('SESSION_CONNECTION', null),
+    'connection' => ws_env('SESSION_CONNECTION', null),
 
     /*
     |--------------------------------------------------------------------------
@@ -100,7 +100,7 @@ return [
     |
     */
 
-    'store' => env('SESSION_STORE', null),
+    'store' => ws_env('SESSION_STORE', null),
 
     /*
     |--------------------------------------------------------------------------
@@ -126,9 +126,9 @@ return [
     |
     */
 
-    'cookie' => env(
+    'cookie' => ws_env(
         'SESSION_COOKIE',
-        Str::slug(env('APP_NAME', 'laravel'), '_').'_session'
+        Str::slug(ws_env('APP_NAME', 'laravel'), '_').'_session'
     ),
 
     /*
@@ -155,7 +155,7 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN', null),
+    'domain' => ws_env('SESSION_DOMAIN', null),
 
     /*
     |--------------------------------------------------------------------------
@@ -168,7 +168,7 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE'),
+    'secure' => ws_env('SESSION_SECURE_COOKIE'),
 
     /*
     |--------------------------------------------------------------------------

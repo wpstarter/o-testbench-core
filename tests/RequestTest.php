@@ -28,7 +28,7 @@ class RequestTest extends TestCase
     protected function defineWebRoutes($router)
     {
         $router->get('web/hello', ['middleware' => 'web', 'uses' => function () {
-            $request = request()->merge(['name' => 'test-old-value']);
+            $request = ws_request()->merge(['name' => 'test-old-value']);
             $request->flash();
 
             return 'hello world';
@@ -40,9 +40,9 @@ class RequestTest extends TestCase
     {
         $this->call('GET', 'hello?foo=bar');
 
-        $this->assertSame('http://localhost/hello?foo=bar', url()->full());
-        $this->assertSame('http://localhost/hello', url()->current());
-        $this->assertSame(['foo' => 'bar'], request()->all());
+        $this->assertSame('http://localhost/hello?foo=bar', ws_url()->full());
+        $this->assertSame('http://localhost/hello', ws_url()->current());
+        $this->assertSame(['foo' => 'bar'], ws_request()->all());
     }
 
     /** @test */
@@ -50,6 +50,6 @@ class RequestTest extends TestCase
     {
         $this->call('GET', 'web/hello');
 
-        $this->assertEquals('test-old-value', old('name'));
+        $this->assertEquals('test-old-value', ws_old('name'));
     }
 }

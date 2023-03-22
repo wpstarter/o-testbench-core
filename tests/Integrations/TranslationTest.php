@@ -9,12 +9,12 @@ class TranslationTest extends TestCase
     /** @test */
     public function it_can_resolve_default_language_path()
     {
-        $this->assertSame(base_path('resources'.DIRECTORY_SEPARATOR.'lang'), $this->app->langPath());
+        $this->assertSame(ws_base_path('resources'.DIRECTORY_SEPARATOR.'lang'), $this->app->langPath());
     }
 
     /** @test */
     public function it_can_resolve_validation_language_string()
     {
-        $this->assertSame('The name field is required.', __('validation.required', ['attribute' => 'name']));
+        $this->assertSame('The name field is required.', ws___('validation.required', ['attribute' => 'name']));
     }
 }

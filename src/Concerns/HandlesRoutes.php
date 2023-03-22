@@ -74,7 +74,7 @@ trait HandlesRoutes
         $laravel->make(Kernel::class)->call('route:cache');
 
         $this->assertTrue(
-            $files->exists(base_path('bootstrap/cache/routes-v7.php'))
+            $files->exists(ws_base_path('bootstrap/cache/routes-v7.php'))
         );
 
         if (isset($this->app)) {
@@ -95,8 +95,8 @@ trait HandlesRoutes
 
         $this->beforeApplicationDestroyed(function () use ($files) {
             $files->delete(
-                base_path('bootstrap/cache/routes-v7.php'),
-                ...$files->glob(base_path('routes/testbench-*.php'))
+                ws_base_path('bootstrap/cache/routes-v7.php'),
+                ...$files->glob(ws_base_path('routes/testbench-*.php'))
             );
 
             sleep(1);

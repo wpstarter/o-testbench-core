@@ -11,7 +11,7 @@ class CustomConfigServiceProvider extends \WpStarter\Support\ServiceProvider
         ];
 
         foreach ($config as $name => $params) {
-            config(['database.redis.'.$name => $params]);
+            ws_config(['database.redis.'.$name => $params]);
         }
     }
 }

@@ -10,7 +10,7 @@ class Controller extends \WpStarter\Routing\Controller
     public function __construct()
     {
         $this->middleware(function ($request, Closure $next) {
-            $route = app('router')->getCurrentRoute();
+            $route = ws_app('router')->getCurrentRoute();
 
             Assert::assertSame('index', $route->getActionMethod());
             Assert::assertSame(Controller::class, \get_class($route->getController()));

@@ -16,7 +16,7 @@ trait HandlesDatabases
      */
     protected function setUpDatabaseRequirements(Closure $callback): void
     {
-        tap($this->app['config'], function ($config) {
+        ws_tap($this->app['config'], function ($config) {
             $this->usesDatabaseConnectionsEnvironmentVariables($config, 'mysql', 'MYSQL');
             $this->usesDatabaseConnectionsEnvironmentVariables($config, 'pgsql', 'POSTGRES');
             $this->usesDatabaseConnectionsEnvironmentVariables($config, 'sqlsrv', 'MSSQL');
