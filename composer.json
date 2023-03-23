@@ -1,5 +1,5 @@
 {
-    "name": "wpstarter/testbench-core",
+    "name": "wpstarter/o-testbench-core",
     "description": "Testing Helper for WpStarter Development",
     "homepage": "https://packages.tools/testbench",
     "keywords": ["wpstarter", "orchestral", "orchestra-platform", "testing", "tdd", "bdd"],
