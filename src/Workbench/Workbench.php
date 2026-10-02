@@ -356,7 +356,7 @@ class Workbench
             $userModel = match (true) {
                 Env::has('AUTH_MODEL') => Env::get('AUTH_MODEL'),
                 is_file(workbench_path('app', 'Models', 'User.php')) => \sprintf('%sModels\User', static::detectNamespace('app')),
-                is_file(base_path(join_paths('Models', 'User.php'))) => 'App\Models\User',
+                is_file(ws_base_path(join_paths('Models', 'User.php'))) => 'App\Models\User',
                 default => false,
             };
 

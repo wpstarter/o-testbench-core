@@ -281,7 +281,7 @@ class Commander
                     })
                 );
         }, function () {
-            if (windows_os() && PHP_SAPI === 'cli' && \function_exists('sapi_windows_set_ctrl_handler')) {
+            if (ws_windows_os() && PHP_SAPI === 'cli' && \function_exists('sapi_windows_set_ctrl_handler')) {
                 sapi_windows_set_ctrl_handler(static function ($event) {
                     TerminatingConsole::handle();
                     Workbench::flush();

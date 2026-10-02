@@ -27,7 +27,7 @@ class UsesVendorTest extends TestCase
         $filesystem = new Filesystem;
 
         $this->assertSame(
-            $filesystem->hash(base_path(join_paths('vendor', 'autoload.php'))),
+            $filesystem->hash(ws_base_path(join_paths('vendor', 'autoload.php'))),
             $filesystem->hash(package_path('vendor', 'autoload.php'))
         );
     }

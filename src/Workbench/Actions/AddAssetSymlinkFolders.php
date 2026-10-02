@@ -44,10 +44,10 @@ final class AddAssetSymlinkFolders
                 $reverse = isset($pair['reverse']) && \is_bool($pair['reverse']) ? $pair['reverse'] : false;
 
                 /** @var string $from */
-                $from = $reverse === false ? package_path($pair['from']) : base_path($pair['from']);
+                $from = $reverse === false ? package_path($pair['from']) : ws_base_path($pair['from']);
 
                 /** @var string $to */
-                $to = $reverse === false ? base_path($pair['to']) : package_path($pair['to']);
+                $to = $reverse === false ? ws_base_path($pair['to']) : package_path($pair['to']);
 
                 return $this->files->isDirectory($from)
                     ? ['from' => $from, 'to' => $to]
@@ -63,7 +63,7 @@ final class AddAssetSymlinkFolders
                 $to = $pair['to'];
 
                 if (is_symlink($to)) {
-                    windows_os() ? @rmdir($to) : $this->files->delete($to);
+                    ws_windows_os() ? @rmdir($to) : $this->files->delete($to);
                 } elseif ($this->files->isDirectory($to)) {
                     $this->files->deleteDirectory($to);
                 }

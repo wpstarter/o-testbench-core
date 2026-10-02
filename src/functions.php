@@ -224,7 +224,7 @@ function transform_realpath_to_relative(string $path, ?string $workingPath = nul
         return str_replace(rtrim($workingPath, $separator).$separator, $prefix.$separator, $path);
     }
 
-    $laravelPath = base_path();
+    $laravelPath = ws_base_path();
     $workbenchPath = workbench_path();
     $packagePath = package_path();
 
@@ -262,7 +262,7 @@ function default_skeleton_path(array|string $path = ''): string|false
  */
 function uses_default_skeleton(?string $basePath = null): bool
 {
-    $basePath ??= base_path();
+    $basePath ??= ws_base_path();
 
     return realpath(Sidekick\Filesystem\join_paths($basePath, 'bootstrap', '.testbench-default-skeleton')) !== false;
 }
@@ -280,7 +280,7 @@ function uses_default_skeleton(?string $basePath = null): bool
 function default_migration_path(?string $type = null): string
 {
     $path = realpath(
-        \is_null($type) ? base_path('migrations') : base_path(Sidekick\Filesystem\join_paths('migrations', $type))
+        \is_null($type) ? ws_base_path('migrations') : ws_base_path(Sidekick\Filesystem\join_paths('migrations', $type))
     );
 
     if ($path === false) {
