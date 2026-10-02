@@ -151,7 +151,7 @@ trait Testing
                 return $this->setUpTheTestEnvironmentTraitToBeIgnored($use);
             })->map(static function ($use) {
                 /** @var class-string $use */
-                return class_basename($use);
+                return ws_class_basename($use);
             })->each(function ($traitBaseName) {
                 /** @var string $traitBaseName */
                 if (method_exists($this, $method = 'setUp'.$traitBaseName)) {

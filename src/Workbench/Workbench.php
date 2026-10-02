@@ -236,7 +236,7 @@ class Workbench
                     'Factory', '', Str::replaceFirst($factoryNamespace, '', $factory::class)
                 );
 
-                $factoryBasename = Str::replaceLast('Factory', '', class_basename($factory));
+                $factoryBasename = Str::replaceLast('Factory', '', ws_class_basename($factory));
 
                 /** @var class-string<\WpStarter\Database\Eloquent\Model> $modelName */
                 $modelName = class_exists($workbenchNamespace.'Models\\'.$namespacedFactoryBasename)
