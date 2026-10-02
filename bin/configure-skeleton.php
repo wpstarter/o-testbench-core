@@ -63,15 +63,15 @@ ws_collect([
         $files->replaceInFile(['{{tableClassName}}', '{{table}}'], [Str::studly($table), $table], "{$workingPath}/laravel/migrations/{$migration}.php");
     });
 
-transform([
+ws_transform([
     line("require __DIR__.'/vendor/autoload.php';") => line("require __DIR__.'/bootstrap/autoload.php';"),
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/laravel/artisan"));
 
-transform([
+ws_transform([
     line("require __DIR__.'/../vendor/autoload.php';") => line("require __DIR__.'/../bootstrap/autoload.php';"),
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/laravel/public/index.php"));
 
-transform([
+ws_transform([
     line('APP_KEY=', 0) => line('APP_KEY=AckfSECXIvnK5r28GVIWUAxmbBSjTsmF', 0),
     line('DB_CONNECTION=mysql', 0) => line('DB_CONNECTION=sqlite', 0),
     line('DB_HOST=', 0) => line('# DB_HOST=', 0),
@@ -92,15 +92,15 @@ ws_collect([
         $files->copy($file, "{$workingPath}/laravel".Str::after($file, "{$workingPath}/vendor/laravel/framework"));
     });
 
-transform([
+ws_transform([
     line("'env' => ws_env('APP_ENV', 'production'),", 1) => line("'env' => ws_env('APP_ENV', 'workbench'),", 1),
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/laravel/config/app.php"));
 
-transform([
+ws_transform([
     line("'model' => ws_env('AUTH_MODEL', App\Models\User::class),", 3) => line("'model' => ws_env('AUTH_MODEL', WpStarter\Foundation\Auth\User::class),", 3),
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/laravel/config/auth.php"));
 
-transform([
+ws_transform([
     line("'bcrypt' => [
         'rounds' => ws_env('BCRYPT_ROUNDS', 12),", 1) => line("'bcrypt' => [
         'rounds' => ws_env('BCRYPT_ROUNDS', 10),", 1),
