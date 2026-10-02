@@ -58,7 +58,7 @@ final class DefineDatabase implements ActionableContract, AfterEachContract, Bef
         };
 
         if ($this->defer === false) {
-            value($resolver);
+            ws_value($resolver);
 
             return null;
         }

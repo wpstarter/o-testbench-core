@@ -51,10 +51,10 @@ trait Testing
         }
 
         if ($this->testCaseSetUpCallback instanceof Closure) {
-            value($this->testCaseSetUpCallback, $setUp);
+            ws_value($this->testCaseSetUpCallback, $setUp);
         }
 
-        value($setUp);
+        ws_value($setUp);
     }
 
     /**
@@ -92,10 +92,10 @@ trait Testing
         }
 
         if ($this->testCaseTearDownCallback instanceof Closure) {
-            value($this->testCaseTearDownCallback, $tearDown);
+            ws_value($this->testCaseTearDownCallback, $tearDown);
         }
 
-        value($tearDown);
+        ws_value($tearDown);
 
         $this->testCaseSetUpCallback = null;
         $this->testCaseTearDownCallback = null;

@@ -50,7 +50,7 @@ if (! \function_exists('Orchestra\Sidekick\enum_value')) {
             $value instanceof BackedEnum => $value->value,
             $value instanceof UnitEnum => $value->name,
 
-            default => $value ?? value($default),
+            default => $value ?? ws_value($default),
         };
     }
 }
@@ -72,7 +72,7 @@ if (! \function_exists('Orchestra\Sidekick\after_resolving')) {
         $app->afterResolving($name, $callback);
 
         if ($app->resolved($name)) {
-            value($callback, $app->make($name), $app);
+            ws_value($callback, $app->make($name), $app);
         }
     }
 }

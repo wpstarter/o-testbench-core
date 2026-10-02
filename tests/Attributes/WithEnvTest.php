@@ -22,7 +22,7 @@ class WithEnvTest extends TestCase
 
         $this->assertTrue(Env::get('TESTING_USING_ATTRIBUTE'));
 
-        value($callback);
+        ws_value($callback);
 
         $this->assertNull(Env::get('TESTING_USING_ATTRIBUTE'));
     }
@@ -46,7 +46,7 @@ class WithEnvTest extends TestCase
 
         $this->assertSame('AckfSECXIvnK5r28GVIWUAxmbBSjTsmF', Env::get('LARAVEL_KEY'));
 
-        value($callback);
+        ws_value($callback);
 
         $this->assertSame('AckfSECXIvnK5r28GVIWUAxmbBSjTsmF', Env::get('LARAVEL_KEY'));
 

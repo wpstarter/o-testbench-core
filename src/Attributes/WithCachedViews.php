@@ -35,7 +35,7 @@ final class WithCachedViews implements AfterEachContract, BeforeEachContract
             return;
         }
 
-        value($callback);
+        ws_value($callback);
     }
 
     /**

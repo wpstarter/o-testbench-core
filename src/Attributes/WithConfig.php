@@ -64,7 +64,7 @@ final class WithConfig implements InvokableContract
         if ($defer === true) {
             $app->booted($action);
         } else {
-            value($action);
+            ws_value($action);
         }
     }
 

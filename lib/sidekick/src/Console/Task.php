@@ -72,7 +72,7 @@ class Task
         $action = $pretending === true ? true : \call_user_func($this->action);
 
         /** @phpstan-ignore argument.type */
-        value($this->response, $action, $pretending);
+        ws_value($this->response, $action, $pretending);
     }
 
     /**

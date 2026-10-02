@@ -23,7 +23,7 @@ final class FeaturesCollection extends Collection
         }
 
         $this->each($callback ?? static function ($attribute) {
-            value($attribute);
+            ws_value($attribute);
         });
     }
 }

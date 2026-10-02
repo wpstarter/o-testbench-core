@@ -39,7 +39,7 @@ trait InteractsWithSqliteDatabaseFile
             $this->files[] = $temporary;
         }
 
-        value($callback);
+        ws_value($callback);
 
         if (isset($temporary)) {
             $filesystem->move($temporary, $database);
@@ -65,7 +65,7 @@ trait InteractsWithSqliteDatabaseFile
                 $filesystem->copy($example = "{$database}.example", $database);
             }
 
-            value($callback);
+            ws_value($callback);
 
             if (isset($example)) {
                 $filesystem->delete($database);

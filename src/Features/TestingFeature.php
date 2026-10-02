@@ -41,12 +41,12 @@ final class TestingFeature
         if ($testCase instanceof PHPUnitTestCase) {
             /** @phpstan-ignore staticMethod.notFound */
             if ($testCase::usesTestingConcern(HandlesAnnotations::class)) {
-                value($annotation, $defaultResolver);
+                ws_value($annotation, $defaultResolver);
             }
 
             /** @phpstan-ignore staticMethod.notFound */
             if ($testCase::usesTestingConcern(HandlesAttributes::class)) {
-                $result['attribute'] = value($attribute, $defaultResolver);
+                $result['attribute'] = ws_value($attribute, $defaultResolver);
             }
         }
 
@@ -55,7 +55,7 @@ final class TestingFeature
             && $pest instanceof Closure
             && $testCase::usesTestingConcern(WithPest::class) /** @phpstan-ignore staticMethod.notFound, class.notFound */
         ) {
-            value($pest, $defaultResolver);
+            ws_value($pest, $defaultResolver);
         }
 
         $defaultResolver();
