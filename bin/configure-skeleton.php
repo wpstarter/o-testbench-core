@@ -44,7 +44,7 @@ ws_collect([
     // 'queue/0001_01_02_000000_testbench_create_job_batches_table' => 'Queue/Console/stubs/batches.stub',
     // 'queue/0001_01_02_000000_testbench_create_failed_jobs_table' => 'Queue/Console/stubs/failed_jobs.stub',
     // 'session/0001_01_02_000000_testbench_create_sessions_table' => 'Session/Console/stubs/database.stub',
-])->transform(fn ($file) => "{$workingPath}/vendor/laravel/framework/src/WpStarter/{$file}")
+])->transform(fn ($file) => "{$workingPath}/vendor/wpstarter/framework/src/WpStarter/{$file}")
     ->each(function ($from, $to) use ($files, $workingPath) {
         $files->copy($from, "{$workingPath}/laravel/migrations/{$to}.php");
     })->keys()
@@ -85,11 +85,11 @@ ws_transform([
 
 ws_collect([
     'config/*.php',
-])->transform(fn ($file) => "{$workingPath}/vendor/laravel/framework/{$file}")
+])->transform(fn ($file) => "{$workingPath}/vendor/wpstarter/framework/{$file}")
     ->map(fn ($file) => str_contains($file, '*') ? [...$files->glob($file)] : $file)
     ->flatten()
     ->each(function ($file) use ($files, $workingPath) {
-        $files->copy($file, "{$workingPath}/laravel".Str::after($file, "{$workingPath}/vendor/laravel/framework"));
+        $files->copy($file, "{$workingPath}/laravel".Str::after($file, "{$workingPath}/vendor/wpstarter/framework"));
     });
 
 ws_transform([

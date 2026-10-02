@@ -39,7 +39,7 @@ trait Testing
      */
     final protected function setUpTheTestEnvironment(): void
     {
-        $setUp = once(function () {
+        $setUp = ws_once(function () {
             $this->setUpTheApplicationTestingHooks(function () {
                 $this->setUpTraits();
             });

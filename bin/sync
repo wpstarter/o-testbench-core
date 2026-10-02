@@ -72,7 +72,7 @@ ws_transform([
  * ----------------------------------------------------------------------
  */
 
-$files->copy("{$workingPath}/vendor/laravel/framework/src/WpStarter/Foundation/resources/server.php", "{$workingPath}/laravel/server.php");
+$files->copy("{$workingPath}/vendor/wpstarter/framework/src/WpStarter/Foundation/resources/server.php", "{$workingPath}/laravel/server.php");
 ws_transform([
     "getcwd()" => "__DIR__.'/public'",
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/laravel/server.php"));

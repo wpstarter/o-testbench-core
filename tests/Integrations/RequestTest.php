@@ -26,7 +26,7 @@ class RequestTest extends TestCase
     protected function defineWebRoutes($router)
     {
         $router->get('web/hello', ['middleware' => 'web', 'uses' => function () {
-            $request = request()->merge(['name' => 'test-old-value']);
+            $request = ws_request()->merge(['name' => 'test-old-value']);
             $request->flash();
 
             return 'hello world';
