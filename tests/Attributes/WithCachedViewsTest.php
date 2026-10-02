@@ -48,7 +48,7 @@ class WithCachedViewsTest extends TestCase
      */
     protected function getCompiledPathForView(string $name): string
     {
-        $path = view($name)->getPath();
+        $path = ws_view($name)->getPath();
 
         return $this->app->make('blade.compiler')->getCompiledPath(realpath($path) ?: $path);
     }

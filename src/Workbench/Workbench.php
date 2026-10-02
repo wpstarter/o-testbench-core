@@ -139,12 +139,12 @@ class Workbench
                                 throw $error;
                             }
 
-                            report($error);
+                            ws_report($error);
 
                             $exception = $error->getMessage();
                         }
 
-                        return response(
+                        return ws_response(
                             View::file(
                                 package_path('vendor', 'laravel', 'framework', 'src', 'WpStarter', 'Foundation', 'resources', 'health-up.blade.php'),
                                 ['exception' => $exception],

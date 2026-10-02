@@ -14,7 +14,7 @@ use WpStarter\Support\Facades\Route;
 */
 
 Route::get('api/hello', function () {
-    return response()->json('hello world');
+    return ws_response()->json('hello world');
 });
 
 Route::get('api/failed', fn () => throw new RuntimeException('Bad route!'));
