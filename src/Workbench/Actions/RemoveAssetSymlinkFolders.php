@@ -8,6 +8,7 @@ use Orchestra\Testbench\Contracts\Config as ConfigContract;
 
 use function Orchestra\Sidekick\Filesystem\is_symlink;
 use function Orchestra\Testbench\package_path;
+use function Orchestra\Sidekick\windows_os;
 
 /**
  * @internal
@@ -50,7 +51,7 @@ final class RemoveAssetSymlinkFolders
 
                 if (is_symlink($to)) {
                     return [$to, function ($to) {
-                        ws_windows_os() ? @rmdir($to) : $this->files->delete($to);
+                        windows_os() ? @rmdir($to) : $this->files->delete($to);
                     }];
                 }
 

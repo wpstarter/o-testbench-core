@@ -27,6 +27,7 @@ use Throwable;
 use function Orchestra\Sidekick\Filesystem\is_symlink;
 use function Orchestra\Sidekick\Filesystem\join_paths;
 use function Orchestra\Sidekick\transform_relative_path;
+use function Orchestra\Sidekick\windows_os;
 
 /**
  * @phpstan-import-type TConfig from \Orchestra\Testbench\Foundation\Config
@@ -281,7 +282,7 @@ class Commander
                     })
                 );
         }, function () {
-            if (ws_windows_os() && PHP_SAPI === 'cli' && \function_exists('sapi_windows_set_ctrl_handler')) {
+            if (windows_os() && PHP_SAPI === 'cli' && \function_exists('sapi_windows_set_ctrl_handler')) {
                 sapi_windows_set_ctrl_handler(static function ($event) {
                     TerminatingConsole::handle();
                     Workbench::flush();

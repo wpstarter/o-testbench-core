@@ -9,6 +9,7 @@ use Orchestra\Testbench\Contracts\Config as ConfigContract;
 
 use function Orchestra\Sidekick\Filesystem\is_symlink;
 use function Orchestra\Testbench\package_path;
+use function Orchestra\Sidekick\windows_os;
 
 /**
  * @internal
@@ -63,7 +64,7 @@ final class AddAssetSymlinkFolders
                 $to = $pair['to'];
 
                 if (is_symlink($to)) {
-                    ws_windows_os() ? @rmdir($to) : $this->files->delete($to);
+                    windows_os() ? @rmdir($to) : $this->files->delete($to);
                 } elseif ($this->files->isDirectory($to)) {
                     $this->files->deleteDirectory($to);
                 }
