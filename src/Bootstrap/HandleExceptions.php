@@ -21,7 +21,7 @@ final class HandleExceptions extends \WpStarter\Foundation\Bootstrap\HandleExcep
     #[\Override]
     public function handleDeprecationError($message, $file, $line, $level = E_DEPRECATED)
     {
-        rescue(function () use ($message, $file, $line, $level) {
+        ws_rescue(function () use ($message, $file, $line, $level) {
             parent::handleDeprecationError($message, $file, $line, $level);
         }, null, false);
 
