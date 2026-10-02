@@ -35,7 +35,7 @@ class EnvironmentVariablesTest extends TestCase
         $user = UserFactory::new()->create();
 
         $this->assertFalse(file_exists(realpath(__DIR__.'/../../laravel/.env')));
-        $this->assertFalse(file_exists(base_path('./env')));
+        $this->assertFalse(file_exists(ws_base_path('./env')));
 
         $this->assertInstanceOf(User::class, $user);
     }

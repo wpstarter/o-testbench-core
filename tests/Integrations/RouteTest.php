@@ -100,9 +100,9 @@ class RouteTest extends TestCase
     #[Test]
     public function it_can_resolve_name_routes()
     {
-        $this->app['router']->get('passthrough', fn () => route('bye'))->name('pass');
+        $this->app['router']->get('passthrough', fn () => ws_route('bye'))->name('pass');
 
-        $response = $this->call('GET', route('pass'));
+        $response = $this->call('GET', ws_route('pass'));
 
         $response->assertStatus(200);
         $this->assertEquals('http://localhost/goodbye', $response->getContent());
@@ -113,7 +113,7 @@ class RouteTest extends TestCase
     {
         $this->app['router']->get('bad-route', fn () => throw new Exception('Route error!'))->name('bad');
 
-        $response = $this->call('GET', route('bad'));
+        $response = $this->call('GET', ws_route('bad'));
 
         $response->assertStatus(500);
     }

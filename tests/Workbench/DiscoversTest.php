@@ -80,7 +80,7 @@ class DiscoversTest extends TestCase
     #[Test]
     public function it_can_resolve_route_name_from_discovers()
     {
-        $this->assertSame(url('/testbench'), route('testbench'));
+        $this->assertSame(ws_url('/testbench'), ws_route('testbench'));
     }
 
     #[Test]

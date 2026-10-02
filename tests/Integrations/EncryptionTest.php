@@ -14,6 +14,6 @@ class EncryptionTest extends TestCase
     #[Group('phpunit-configuration')]
     public function it_can_encrypt_string()
     {
-        $this->assertIsString(encrypt('laravel'));
+        $this->assertIsString(ws_encrypt('laravel'));
     }
 }

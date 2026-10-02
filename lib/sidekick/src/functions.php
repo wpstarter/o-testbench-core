@@ -226,7 +226,7 @@ if (! \function_exists('Orchestra\Sidekick\working_path')) {
     {
         return is_testbench_cli()
             ? package_path($path)
-            : base_path(join_paths(...Arr::wrap(\func_num_args() > 1 ? \func_get_args() : $path)));
+            : ws_base_path(join_paths(...Arr::wrap(\func_num_args() > 1 ? \func_get_args() : $path)));
     }
 }
 
@@ -245,7 +245,7 @@ if (! \function_exists('Orchestra\Sidekick\laravel_normalize_version')) {
         }
 
         /** @var string $version */
-        $version = transform(
+        $version = ws_transform(
             Application::VERSION,
             fn (string $version) => match ($version) {
                 '14.x-dev' => '14.0.0',

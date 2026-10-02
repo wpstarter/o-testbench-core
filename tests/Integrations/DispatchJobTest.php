@@ -13,7 +13,7 @@ class DispatchJobTest extends TestCase
     {
         Bus::fake();
 
-        dispatch(new RegisterUser);
+        ws_dispatch(new RegisterUser);
 
         Bus::assertDispatched(RegisterUser::class);
     }

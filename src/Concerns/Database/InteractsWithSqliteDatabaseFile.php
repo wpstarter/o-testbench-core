@@ -31,7 +31,7 @@ trait InteractsWithSqliteDatabaseFile
         $time = time();
         $filesystem = new Filesystem;
 
-        $database = database_path('database.sqlite');
+        $database = ws_database_path('database.sqlite');
 
         if ($filesystem->exists($database)) {
             $filesystem->move($database, $temporary = "{$database}.backup-{$time}");
@@ -59,7 +59,7 @@ trait InteractsWithSqliteDatabaseFile
         $this->withoutSqliteDatabase(static function () use ($callback) {
             $filesystem = new Filesystem;
 
-            $database = database_path('database.sqlite');
+            $database = ws_database_path('database.sqlite');
 
             if (! $filesystem->exists($database)) {
                 $filesystem->copy($example = "{$database}.example", $database);
@@ -87,8 +87,8 @@ trait InteractsWithSqliteDatabaseFile
 
         $filesystem->delete(
             (new Collection([
-                ...$filesystem->glob(database_path('database.sqlite.backup-*')),
-                ...$filesystem->glob(database_path('database.sqlite-*')),
+                ...$filesystem->glob(ws_database_path('database.sqlite.backup-*')),
+                ...$filesystem->glob(ws_database_path('database.sqlite-*')),
             ]))->filter(static fn ($file) => $filesystem->exists($file))
                 ->all()
         );

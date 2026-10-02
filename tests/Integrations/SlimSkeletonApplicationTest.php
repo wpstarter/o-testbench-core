@@ -17,7 +17,7 @@ class SlimSkeletonApplicationTest extends TestCase
     #[Test]
     public function it_can_access_welcome_page_using_route_name()
     {
-        $this->get(route('welcome'))
+        $this->get(ws_route('welcome'))
             ->assertOk();
     }
 
@@ -28,14 +28,14 @@ class SlimSkeletonApplicationTest extends TestCase
         $this->expectExceptionMessage('Route [login] not defined.');
 
         $this->withoutExceptionHandling()
-            ->get(route('dashboard'));
+            ->get(ws_route('dashboard'));
     }
 
     #[Test]
     #[DefineRoute('defineLoginRoutes')]
     public function it_can_be_redirected_to_login_route_name_when_trying_to_access_authenticated_routes()
     {
-        $this->get(route('dashboard'))
+        $this->get(ws_route('dashboard'))
             ->assertRedirectToRoute('login');
     }
 
