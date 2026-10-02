@@ -2,59 +2,94 @@
 
 namespace Orchestra\Testbench\Console;
 
-use Dotenv\Dotenv;
-use Dotenv\Loader\Loader;
-use Dotenv\Parser\Parser;
-use Dotenv\Store\StringStore;
+use WpStarter\Console\Concerns\InteractsWithSignals;
 use WpStarter\Contracts\Console\Kernel as ConsoleKernel;
 use WpStarter\Contracts\Debug\ExceptionHandler;
 use WpStarter\Filesystem\Filesystem;
-use WpStarter\Support\Env;
-use Orchestra\Testbench\Concerns\CreatesApplication;
+use WpStarter\Foundation\Application as LaravelApplication;
+use WpStarter\Support\Arr;
+use WpStarter\Support\Collection;
+use Orchestra\Testbench\Foundation\Application as Testbench;
+use Orchestra\Testbench\Foundation\Bootstrap\LoadMigrationsFromArray;
+use Orchestra\Testbench\Foundation\Config;
+use Orchestra\Testbench\Foundation\Console\Concerns\CopyTestbenchFiles;
+use Orchestra\Testbench\Foundation\Console\Signals;
+use Orchestra\Testbench\Foundation\Console\TerminatingConsole;
 use Orchestra\Testbench\Foundation\TestbenchServiceProvider;
+use Orchestra\Testbench\Workbench\Workbench;
+use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\SignalRegistry\SignalRegistry;
 use Throwable;
 
+use function Orchestra\Sidekick\Filesystem\is_symlink;
+use function Orchestra\Sidekick\Filesystem\join_paths;
+use function Orchestra\Sidekick\transform_relative_path;
+
+/**
+ * @phpstan-import-type TConfig from \Orchestra\Testbench\Foundation\Config
+ *
+ * @codeCoverageIgnore
+ */
 class Commander
 {
-    use CreatesApplication {
-        resolveApplication as protected resolveApplicationFromTrait;
-        getBasePath as protected getBasePathFromTrait;
-    }
+    use CopyTestbenchFiles;
+    use InteractsWithSignals;
 
     /**
      * Application instance.
      *
-     * @var \WpStarter\Foundation\Application
+     * @var \WpStarter\Foundation\Application|null
      */
     protected $app;
 
     /**
      * List of configurations.
      *
-     * @var array
+     * @var \Orchestra\Testbench\Foundation\Config
      */
-    protected $config = [];
+    protected readonly Config $config;
 
     /**
-     * Working path.
+     * The environment file name.
      *
      * @var string
      */
-    protected $workingPath;
+    protected string $environmentFile = '.env';
+
+    /**
+     * The testbench implementation class.
+     *
+     * @var class-string<\Orchestra\Testbench\Foundation\Application>
+     */
+    protected static string $testbench = Testbench::class;
+
+    /**
+     * List of providers.
+     *
+     * @var array<int, class-string<\WpStarter\Support\ServiceProvider>>
+     */
+    protected array $providers = [
+        TestbenchServiceProvider::class,
+    ];
 
     /**
      * Construct a new Commander.
      *
-     * @param  array  $config
+     * @param  \Orchestra\Testbench\Foundation\Config|array  $config
      * @param  string  $workingPath
+     *
+     * @phpstan-param \Orchestra\Testbench\Foundation\Config|TConfig  $config
      */
-    public function __construct(array $config, string $workingPath)
-    {
-        $this->config = $config;
-        $this->workingPath = $workingPath;
+    public function __construct(
+        Config|array $config,
+        protected readonly string $workingPath
+    ) {
+        $this->config = $config instanceof Config ? $config : new Config($config);
+
+        $_ENV['TESTBENCH_ENVIRONMENT_FILENAME'] = $this->environmentFile;
     }
 
     /**
@@ -62,175 +97,133 @@ class Commander
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
-        $laravel = $this->laravel();
-
-        $kernel = $laravel->make(ConsoleKernel::class);
-
-        $input = new ArgvInput();
-        $output = new ConsoleOutput();
+        $input = new ArgvInput;
+        $output = new ConsoleOutput;
 
         try {
+            $laravel = $this->laravel();
+            $kernel = $laravel->make(ConsoleKernel::class);
+
+            $this->prepareCommandSignals();
+
             $status = $kernel->handle($input, $output);
+
+            $kernel->terminate($input, $status);
         } catch (Throwable $error) {
             $status = $this->handleException($output, $error);
-        }
+        } finally {
+            TerminatingConsole::handle();
+            Workbench::flush();
+            static::$testbench::flushState($this);
 
-        $kernel->terminate($input, $status);
+            $this->untrap();
+        }
 
         exit($status);
     }
 
     /**
-     * Create Laravel application.
+     * Create a Laravel application.
      *
      * @return \WpStarter\Foundation\Application
      */
     public function laravel()
     {
-        if (! $this->app) {
-            $this->createSymlinkToVendorPath();
+        if (! $this->app instanceof LaravelApplication) {
+            $APP_BASE_PATH = $this->getApplicationBasePath();
+            $VENDOR_PATH = join_paths($this->workingPath, 'vendor');
 
-            $this->app = $this->createApplication();
+            TerminatingConsole::beforeWhen(
+                ! is_symlink(join_paths($APP_BASE_PATH, 'vendor')),
+                static function () use ($APP_BASE_PATH) {
+                    static::$testbench::deleteVendorSymlink($APP_BASE_PATH);
+                }
+            );
+
+            $filesystem = new Filesystem;
+
+            $hasEnvironmentFile = static fn () => is_file(join_paths($APP_BASE_PATH, '.env'));
+
+            ws_tap(
+                static::$testbench::createVendorSymlink($APP_BASE_PATH, $VENDOR_PATH),
+                function ($app) use ($filesystem, $hasEnvironmentFile) {
+                    $this->copyTestbenchConfigurationFile($app, $filesystem, $this->workingPath);
+
+                    if (! $hasEnvironmentFile()) {
+                        $this->copyTestbenchDotEnvFile($app, $filesystem, $this->workingPath);
+                    }
+                }
+            );
+
+            $this->app = static::$testbench::create(
+                basePath: $APP_BASE_PATH,
+                resolvingCallback: $this->resolveApplicationCallback(),
+                options: array_filter([
+                    'load_environment_variables' => $hasEnvironmentFile(),
+                    'extra' => $this->config->getExtraAttributes(),
+                ]),
+            );
+
+            $this->app->instance('TESTBENCH_COMMANDER', $this);
         }
 
         return $this->app;
     }
 
     /**
-     * Ignore package discovery from.
+     * Resolve application implementation callback.
      *
-     * @return array
+     * @return \Closure(\WpStarter\Foundation\Application): void
      */
-    public function ignorePackageDiscoveriesFrom()
+    protected function resolveApplicationCallback()
     {
-        return $this->config['dont-discover'] ?? [];
+        return function ($app) {
+            Workbench::startWithProviders($app, $this->config);
+            Workbench::discoverRoutes($app, $this->config);
+
+            (new LoadMigrationsFromArray(
+                $this->config['migrations'] ?? [],
+                $this->config['seeders'] ?? false,
+            ))->bootstrap($app);
+
+            foreach ($this->providers as $provider) {
+                $app->register($provider);
+            }
+        };
     }
 
     /**
-     * Get package providers.
+     * Resolve the application's base path.
      *
-     * @param  \WpStarter\Foundation\Application  $app
-     * @return array
-     */
-    protected function getPackageProviders($app)
-    {
-        return $this->config['providers'] ?? [];
-    }
-
-    /**
-     * Resolve application implementation.
-     *
-     * @return \WpStarter\Foundation\Application
-     */
-    protected function resolveApplication()
-    {
-        return ws_tap($this->resolveApplicationFromTrait(), function ($app) {
-            $this->createDotenv()->load();
-
-            $app->register(TestbenchServiceProvider::class);
-        });
-    }
-
-    /**
-     * Create a Dotenv instance.
-     */
-    protected function createDotenv(): Dotenv
-    {
-        $laravelBasePath = $this->getBasePath();
-
-        if (file_exists($laravelBasePath.'/.env')) {
-            return Dotenv::create(
-                Env::getRepository(), $laravelBasePath.'/', '.env'
-            );
-        }
-
-        return new Dotenv(
-            new StringStore(implode("\n", $this->config['env'] ?? [])),
-            new Parser(),
-            new Loader(),
-            Env::getRepository()
-        );
-    }
-
-    /**
-     * Get base path.
+     * @api
      *
      * @return string
      */
-    protected function getBasePath()
+    protected function getApplicationBasePath()
     {
-        $laravelBasePath = $this->config['laravel'] ?? null;
+        $path = $this->config['laravel'] ?? null;
 
-        if (! \is_null($laravelBasePath)) {
-            return ws_tap(str_replace('./', $this->workingPath.'/', $laravelBasePath), static function ($path) {
+        if (! \is_null($path) && ! isset($_ENV['APP_BASE_PATH'])) {
+            return ws_tap(transform_relative_path($path, $this->workingPath), static function ($path) {
                 $_ENV['APP_BASE_PATH'] = $path;
             });
         }
 
-        return $this->getBasePathFromTrait();
+        return static::applicationBasePath();
     }
 
     /**
-     * Create symlink on vendor path.
-     */
-    protected function createSymlinkToVendorPath(): void
-    {
-        $workingVendorPath = $this->workingPath.'/vendor';
-
-        ws_tap($this->resolveApplication(), static function ($laravel) use ($workingVendorPath) {
-            $filesystem = new Filesystem();
-
-            $laravelVendorPath = $laravel->basePath('vendor');
-
-            if (
-                "{$laravelVendorPath}/autoload.php" !== "{$workingVendorPath}/autoload.php"
-            ) {
-                if ($filesystem->exists($laravel->basePath('bootstrap/cache/packages.php'))) {
-                    $filesystem->delete($laravel->basePath('bootstrap/cache/packages.php'));
-                }
-
-                $filesystem->delete($laravelVendorPath);
-                $filesystem->link($workingVendorPath, $laravelVendorPath);
-            }
-
-            $laravel->flush();
-        });
-    }
-
-    /**
-     * Resolve application Console Kernel implementation.
+     * Get the application's base path.
      *
-     * @param  \WpStarter\Foundation\Application  $app
-     * @return void
-     */
-    protected function resolveApplicationConsoleKernel($app)
-    {
-        $kernel = 'Orchestra\Testbench\Console\Kernel';
-
-        if (file_exists($app->basePath('app/Console/Kernel.php')) && class_exists('App\Console\Kernel')) {
-            $kernel = 'App\Console\Kernel';
-        }
-
-        $app->singleton('WpStarter\Contracts\Console\Kernel', $kernel);
-    }
-
-    /**
-     * Resolve application HTTP Kernel implementation.
+     * @api
      *
-     * @param  \WpStarter\Foundation\Application  $app
-     * @return void
+     * @return string
      */
-    protected function resolveApplicationHttpKernel($app)
+    public static function applicationBasePath()
     {
-        $kernel = 'Orchestra\Testbench\Http\Kernel';
-
-        if (file_exists($app->basePath('app/Http/Kernel.php')) && class_exists('App\Http\Kernel')) {
-            $kernel = 'App\Http\Kernel';
-        }
-
-        $app->singleton('WpStarter\Contracts\Http\Kernel', $kernel);
+        return static::$testbench::applicationBasePath();
     }
 
     /**
@@ -240,15 +233,72 @@ class Commander
      * @param  \Throwable  $error
      * @return int
      */
-    protected function handleException(OutputInterface $output, Throwable $error)
+    protected function handleException(OutputInterface $output, Throwable $error): int
     {
-        $laravel = $this->laravel();
-
-        ws_tap($laravel->make(ExceptionHandler::class), static function ($handler) use ($error, $output) {
-            $handler->report($error);
-            $handler->renderForConsole($output, $error);
-        });
+        if ($this->app instanceof LaravelApplication) {
+            ws_tap($this->app->make(ExceptionHandler::class), static function ($handler) use ($error, $output) {
+                $handler->report($error);
+                $handler->renderForConsole($output, $error);
+            });
+        } else {
+            (new ConsoleApplication)->renderThrowable($error, $output);
+        }
 
         return 1;
+    }
+
+    /**
+     * Prepare command signals.
+     *
+     * @return void
+     */
+    protected function prepareCommandSignals(): void
+    {
+        Signals::resolveAvailabilityUsing(static fn () => \extension_loaded('pcntl'));
+
+        Signals::whenAvailable(function () {
+            $this->signals ??= new Signals(new SignalRegistry);
+
+            (new Collection(Arr::wrap([SIGTERM, SIGINT, SIGHUP, SIGUSR1, SIGUSR2, SIGQUIT])))
+                ->each(
+                    fn ($signal) => $this->signals->register($signal, function () use ($signal) {
+                        TerminatingConsole::handle($signal);
+                        Workbench::flush();
+
+                        $status = match ($signal) {
+                            SIGINT => 130,
+                            SIGTERM => 143,
+                            default => 128 + $signal,
+                        };
+
+                        $this->untrap();
+
+                        if (\in_array($status, [130])) {
+                            exit;
+                        }
+
+                        exit($status);
+                    })
+                );
+        }, function () {
+            if (windows_os() && PHP_SAPI === 'cli' && \function_exists('sapi_windows_set_ctrl_handler')) {
+                sapi_windows_set_ctrl_handler(static function ($event) {
+                    TerminatingConsole::handle();
+                    Workbench::flush();
+
+                    $status = match ($event) {
+                        PHP_WINDOWS_EVENT_CTRL_C => 572,
+                        PHP_WINDOWS_EVENT_CTRL_BREAK => 572,
+                        default => 0,
+                    };
+
+                    if (\in_array($status, [0])) {
+                        exit;
+                    }
+
+                    exit($status);
+                });
+            }
+        });
     }
 }

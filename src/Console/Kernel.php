@@ -5,7 +5,10 @@ namespace Orchestra\Testbench\Console;
 use Orchestra\Testbench\Foundation\Console\Kernel as ConsoleKernel;
 use Throwable;
 
-class Kernel extends ConsoleKernel
+/**
+ * @codeCoverageIgnore
+ */
+final class Kernel extends ConsoleKernel
 {
     /**
      * The Artisan commands provided by your application.
@@ -15,18 +18,6 @@ class Kernel extends ConsoleKernel
     protected $commands = [];
 
     /**
-     * Register the commands for the application.
-     *
-     * @return void
-     */
-    protected function commands()
-    {
-        if (file_exists($console = ws_base_path('routes/console.php'))) {
-            require $console;
-        }
-    }
-
-    /**
      * Report the exception to the exception handler.
      *
      * @param  \Throwable  $e
@@ -34,8 +25,20 @@ class Kernel extends ConsoleKernel
      *
      * @throws \Throwable
      */
+    #[\Override]
     protected function reportException(Throwable $e)
     {
         throw $e;
+    }
+
+    /**
+     * Determine if the kernel should discover commands.
+     *
+     * @return bool
+     */
+    #[\Override]
+    protected function shouldDiscoverCommands()
+    {
+        return \get_class($this) === __CLASS__;
     }
 }

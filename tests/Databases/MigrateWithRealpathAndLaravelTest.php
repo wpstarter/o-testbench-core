@@ -2,26 +2,17 @@
 
 namespace Orchestra\Testbench\Tests\Databases;
 
-use Orchestra\Testbench\TestCase;
+use WpStarter\Support\Facades\DB;
+use WpStarter\Support\Facades\Hash;
+use Orchestra\Testbench\Attributes\WithConfig;
+use Orchestra\Testbench\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
+#[WithConfig('database.default', 'testing')]
 class MigrateWithRealpathAndLaravelTest extends TestCase
 {
-    /**
-     * Define environment setup.
-     *
-     * @param  \WpStarter\Foundation\Application  $app
-     * @return void
-     */
-    protected function defineEnvironment($app)
-    {
-        $app['config']->set('database.default', 'testing');
-    }
-
-    /**
-     * Define database migrations.
-     *
-     * @return void
-     */
+    /** {@inheritDoc} */
+    #[\Override]
     protected function defineDatabaseMigrations()
     {
         $this->loadLaravelMigrations(['--database' => 'testing']);
@@ -30,16 +21,16 @@ class MigrateWithRealpathAndLaravelTest extends TestCase
         // the path option should be an absolute path.
         $this->loadMigrationsFrom([
             '--database' => 'testing',
-            '--path' => realpath(__DIR__.'/../migrations'),
+            '--path' => realpath(__DIR__.'/../../workbench/database/migrations'),
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_runs_the_migrations()
     {
-        $users = \DB::table('testbench_users')->where('id', '=', 1)->first();
+        $users = DB::table('testbench_users')->where('id', '=', 1)->first();
 
-        $this->assertEquals('hello@orchestraplatform.com', $users->email);
-        $this->assertTrue(\Hash::check('123', $users->password));
+        $this->assertEquals('crynobone@gmail.com', $users->email);
+        $this->assertTrue(Hash::check('123', $users->password));
     }
 }

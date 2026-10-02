@@ -2,26 +2,23 @@
 
 namespace Orchestra\Testbench\Tests\Integrations;
 
-use Orchestra\Testbench\TestCase;
+use Orchestra\Testbench\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CustomConfigurationTest extends TestCase
 {
-    /**
-     * Get package providers.
-     *
-     * @param  \WpStarter\Foundation\Application  $app
-     * @return array
-     */
+    /** {@inheritDoc} */
+    #[\Override]
     protected function getPackageProviders($app)
     {
         return [
-            'Orchestra\Testbench\Tests\Fixtures\Providers\CustomConfigServiceProvider',
+            \Orchestra\Testbench\Tests\Fixtures\Providers\CustomConfigServiceProvider::class,
         ];
     }
 
-    /** @test */
+    #[Test]
     public function it_can_override_existing_configuration_on_register()
     {
-        $this->assertSame('bar', ws_config('database.redis.foo'));
+        $this->assertSame('bar', config('database.redis.foo'));
     }
 }

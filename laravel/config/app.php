@@ -1,5 +1,8 @@
 <?php
 
+use WpStarter\Support\Facades\Facade;
+use WpStarter\Support\ServiceProvider;
+
 return [
 
     /*
@@ -7,9 +10,9 @@ return [
     | Application Name
     |--------------------------------------------------------------------------
     |
-    | This value is the name of your application. This value is used when the
+    | This value is the name of your application, which will be used when the
     | framework needs to place the application's name in a notification or
-    | any other location as required by the application or its packages.
+    | other UI elements where an application name needs to be displayed.
     |
     */
 
@@ -26,7 +29,7 @@ return [
     |
     */
 
-    'env' => ws_env('APP_ENV', 'testing'),
+    'env' => ws_env('APP_ENV', 'workbench'),
 
     /*
     |--------------------------------------------------------------------------
@@ -48,13 +51,15 @@ return [
     |
     | This URL is used by the console to properly generate URLs when using
     | the Artisan command line tool. You should set this to the root of
-    | your application so that it is used when running Artisan tasks.
+    | the application so that it's available within Artisan commands.
     |
     */
 
     'url' => ws_env('APP_URL', 'http://localhost'),
 
-    'asset_url' => ws_env('ASSET_URL', null),
+    'frontend_url' => ws_env('FRONTEND_URL', 'http://localhost:3000'),
+
+    'asset_url' => ws_env('ASSET_URL'),
 
     /*
     |--------------------------------------------------------------------------
@@ -62,8 +67,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | Here you may specify the default timezone for your application, which
-    | will be used by the PHP date and date-time functions. We have gone
-    | ahead and set this to a sensible default for you out of the box.
+    | will be used by the PHP date and date-time functions. The timezone
+    | is set to "UTC" by default as it is suitable for most use cases.
     |
     */
 
@@ -75,25 +80,25 @@ return [
     |--------------------------------------------------------------------------
     |
     | The application locale determines the default locale that will be used
-    | by the translation service provider. You are free to set this value
-    | to any of the locales which will be supported by the application.
+    | by Laravel's translation / localization methods. This option can be
+    | set to any locale for which you plan to have translation strings.
     |
     */
 
-    'locale' => 'en',
+    'locale' => ws_env('APP_LOCALE', 'en'),
 
     /*
     |--------------------------------------------------------------------------
     | Application Fallback Locale
     |--------------------------------------------------------------------------
     |
-    | The fallback locale determines the locale to use when the current one
+    | The fallback locale determines the locale to use when the default one
     | is not available. You may change the value to correspond to any of
-    | the language folders that are provided through your application.
+    | the languages which are currently supported by your application.
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => ws_env('APP_FALLBACK_LOCALE', 'en'),
 
     /*
     |--------------------------------------------------------------------------
@@ -106,76 +111,66 @@ return [
     |
     */
 
-    'faker_locale' => 'en_US',
+    'faker_locale' => ws_env('APP_FAKER_LOCALE', 'en_US'),
 
     /*
     |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |
-    | This key is used by the Illuminate encrypter service and should be set
-    | to a random, 32 character string, otherwise these encrypted strings
-    | will not be safe. Please do this before deploying an application!
+    | This key is utilized by Laravel's encryption services and should be set
+    | to a random, 32 character string to ensure that all encrypted values
+    | are secure. You should do this prior to deploying the application.
     |
     */
 
+    'cipher' => 'AES-256-CBC',
+
     'key' => ws_env('APP_KEY'),
 
-    'cipher' => 'AES-256-CBC',
+    'previous_keys' => [
+        ...array_filter(
+            explode(',', (string) ws_env('APP_PREVIOUS_KEYS', ''))
+        ),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Maintenance Mode Driver
+    |--------------------------------------------------------------------------
+    |
+    | These configuration options determine the driver used to determine and
+    | manage Laravel's "maintenance mode" status. The "cache" driver will
+    | allow maintenance mode to be controlled across multiple machines.
+    |
+    | Supported drivers: "file", "cache"
+    |
+    */
+
+    'maintenance' => [
+        'driver' => ws_env('APP_MAINTENANCE_DRIVER', 'file'),
+        'store' => ws_env('APP_MAINTENANCE_STORE', 'database'),
+    ],
 
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
     |
-    | The service providers listed here will be automatically loaded on the
-    | request to your application. Feel free to add your own services to
-    | this array to grant expanded functionality to your applications.
+    | The service providers listed here will be automatically loaded on any
+    | requests to your application. You may add your own services to the
+    | arrays below to provide additional features to this application.
     |
     */
 
-    'providers' => [
-
-        /*
-         * Laravel Framework Service Providers...
-         */
-        WpStarter\Auth\AuthServiceProvider::class,
-        WpStarter\Broadcasting\BroadcastServiceProvider::class,
-        WpStarter\Bus\BusServiceProvider::class,
-        WpStarter\Cache\CacheServiceProvider::class,
-        WpStarter\Foundation\Providers\ConsoleSupportServiceProvider::class,
-        WpStarter\Cookie\CookieServiceProvider::class,
-        WpStarter\Database\DatabaseServiceProvider::class,
-        WpStarter\Encryption\EncryptionServiceProvider::class,
-        WpStarter\Filesystem\FilesystemServiceProvider::class,
-        WpStarter\Foundation\Providers\FoundationServiceProvider::class,
-        WpStarter\Hashing\HashServiceProvider::class,
-        WpStarter\Mail\MailServiceProvider::class,
-        WpStarter\Notifications\NotificationServiceProvider::class,
-        WpStarter\Pagination\PaginationServiceProvider::class,
-        WpStarter\Pipeline\PipelineServiceProvider::class,
-        WpStarter\Queue\QueueServiceProvider::class,
-        WpStarter\Redis\RedisServiceProvider::class,
-        WpStarter\Auth\Passwords\PasswordResetServiceProvider::class,
-        WpStarter\Session\SessionServiceProvider::class,
-        WpStarter\Translation\TranslationServiceProvider::class,
-        WpStarter\Validation\ValidationServiceProvider::class,
-        WpStarter\View\ViewServiceProvider::class,
-
-        /*
-         * Package Service Providers...
-         */
-
-        /*
-         * Application Service Providers...
-         */
+    'providers' => ServiceProvider::defaultProviders()->merge([
+        // Package Service Providers...
+    ])->merge([
+        // Application Service Providers...
         // App\Providers\AppServiceProvider::class,
-        // App\Providers\AuthServiceProvider::class,
-        // // App\Providers\BroadcastServiceProvider::class,
-        // App\Providers\EventServiceProvider::class,
-        // App\Providers\RouteServiceProvider::class,
-
-    ],
+    ])->merge([
+        // Added Service Providers (Do not remove this line)...
+    ])->toArray(),
 
     /*
     |--------------------------------------------------------------------------
@@ -183,53 +178,13 @@ return [
     |--------------------------------------------------------------------------
     |
     | This array of class aliases will be registered when this application
-    | is started. However, feel free to register as many as you wish as
-    | the aliases are "lazy" loaded so they don't hinder performance.
+    | is started. You may add any additional class aliases which should
+    | be loaded to the array. For speed, all aliases are lazy loaded.
     |
     */
 
-    'aliases' => [
-
-        'App' => WpStarter\Support\Facades\App::class,
-        'Arr' => WpStarter\Support\Arr::class,
-        'Artisan' => WpStarter\Support\Facades\Artisan::class,
-        'Auth' => WpStarter\Support\Facades\Auth::class,
-        'Blade' => WpStarter\Support\Facades\Blade::class,
-        'Broadcast' => WpStarter\Support\Facades\Broadcast::class,
-        'Bus' => WpStarter\Support\Facades\Bus::class,
-        'Cache' => WpStarter\Support\Facades\Cache::class,
-        'Config' => WpStarter\Support\Facades\Config::class,
-        'Cookie' => WpStarter\Support\Facades\Cookie::class,
-        'Crypt' => WpStarter\Support\Facades\Crypt::class,
-        'Date' => WpStarter\Support\Facades\Date::class,
-        'DB' => WpStarter\Support\Facades\DB::class,
-        'Eloquent' => WpStarter\Database\Eloquent\Model::class,
-        'Event' => WpStarter\Support\Facades\Event::class,
-        'File' => WpStarter\Support\Facades\File::class,
-        'Gate' => WpStarter\Support\Facades\Gate::class,
-        'Hash' => WpStarter\Support\Facades\Hash::class,
-        'Http' => WpStarter\Support\Facades\Http::class,
-        'Js' => WpStarter\Support\Js::class,
-        'Lang' => WpStarter\Support\Facades\Lang::class,
-        'Log' => WpStarter\Support\Facades\Log::class,
-        'Mail' => WpStarter\Support\Facades\Mail::class,
-        'Notification' => WpStarter\Support\Facades\Notification::class,
-        'Password' => WpStarter\Support\Facades\Password::class,
-        'Queue' => WpStarter\Support\Facades\Queue::class,
-        'RateLimiter' => WpStarter\Support\Facades\RateLimiter::class,
-        'Redirect' => WpStarter\Support\Facades\Redirect::class,
-        // 'Redis' => WpStarter\Support\Facades\Redis::class,
-        'Request' => WpStarter\Support\Facades\Request::class,
-        'Response' => WpStarter\Support\Facades\Response::class,
-        'Route' => WpStarter\Support\Facades\Route::class,
-        'Schema' => WpStarter\Support\Facades\Schema::class,
-        'Session' => WpStarter\Support\Facades\Session::class,
-        'Storage' => WpStarter\Support\Facades\Storage::class,
-        'Str' => WpStarter\Support\Str::class,
-        'URL' => WpStarter\Support\Facades\URL::class,
-        'Validator' => WpStarter\Support\Facades\Validator::class,
-        'View' => WpStarter\Support\Facades\View::class,
-
-    ],
+    'aliases' => Facade::defaultAliases()->merge([
+        // 'Example' => App\Facades\Example::class,
+    ])->toArray(),
 
 ];

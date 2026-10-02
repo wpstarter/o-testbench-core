@@ -3,32 +3,82 @@
 namespace Orchestra\Testbench\Concerns;
 
 use WpStarter\Support\Collection;
-use WpStarter\Support\Str;
 
+use function Orchestra\Sidekick\Filesystem\join_paths;
+
+/**
+ * @internal
+ */
 trait InteractsWithPublishedFiles
 {
     /**
+     * Determine if trait teardown has been registered.
+     *
+     * @var bool
+     */
+    protected bool $interactsWithPublishedFilesTeardownRegistered = false;
+
+    /**
+     * List of existing migration files.
+     *
+     * @var array<int, string>|null
+     */
+    protected ?array $cachedExistingMigrationsFiles = null;
+
+    /**
      * Setup Interacts with Published Files environment.
+     *
+     * @internal
+     *
+     * @return void
      */
     protected function setUpInteractsWithPublishedFiles(): void
     {
-        $this->cleanUpFiles();
-        $this->cleanUpMigrationFiles();
+        $this->cacheExistingMigrationsFiles();
+
+        $this->cleanUpPublishedFiles();
+        $this->cleanUpPublishedMigrationFiles();
     }
 
     /**
      * Teardown Interacts with Published Files environment.
+     *
+     * @internal
+     *
+     * @return void
      */
     protected function tearDownInteractsWithPublishedFiles(): void
     {
-        $this->cleanUpFiles();
-        $this->cleanUpMigrationFiles();
+        if ($this->interactsWithPublishedFilesTeardownRegistered === false) {
+            $this->cleanUpPublishedFiles();
+            $this->cleanUpPublishedMigrationFiles();
+        }
+
+        $this->interactsWithPublishedFilesTeardownRegistered = true;
+    }
+
+    /**
+     * Cache existing migration files.
+     *
+     * @internal
+     *
+     * @return void
+     */
+    protected function cacheExistingMigrationsFiles()
+    {
+        $this->cachedExistingMigrationsFiles ??= (new Collection(
+            $this->app['files']->files($this->app->databasePath('migrations'))
+        ))->filter(static fn ($file) => str_ends_with($file, '.php'))
+            ->all();
     }
 
     /**
      * Assert file does contains data.
      *
+     * @api
+     *
      * @param  array<int, string>  $contains
+     * @return void
      */
     protected function assertFileContains(array $contains, string $file, string $message = ''): void
     {
@@ -46,9 +96,12 @@ trait InteractsWithPublishedFiles
     /**
      * Assert file doesn't contains data.
      *
+     * @api
+     *
      * @param  array<int, string>  $contains
+     * @return void
      */
-    protected function assertFileNotContains(array $contains, string $file, string $message = ''): void
+    protected function assertFileDoesNotContains(array $contains, string $file, string $message = ''): void
     {
         $this->assertFilenameExists($file);
 
@@ -62,13 +115,33 @@ trait InteractsWithPublishedFiles
     }
 
     /**
-     * Assert file does contains data.
+     * Assert file doesn't contains data.
+     *
+     * @api
      *
      * @param  array<int, string>  $contains
+     * @return void
      */
-    protected function assertMigrationFileContains(array $contains, string $file, string $message = ''): void
+    protected function assertFileNotContains(array $contains, string $file, string $message = ''): void
     {
-        $haystack = $this->app['files']->get($this->getMigrationFile($file));
+        $this->assertFileDoesNotContains($contains, $file, $message);
+    }
+
+    /**
+     * Assert file does contains data.
+     *
+     * @api
+     *
+     * @param  array<int, string>  $contains
+     * @return void
+     */
+    protected function assertMigrationFileContains(array $contains, string $file, string $message = '', ?string $directory = null): void
+    {
+        $migrationFile = $this->findFirstPublishedMigrationFile($file, $directory);
+
+        $this->assertTrue(! \is_null($migrationFile), "Assert migration file {$file} does exist");
+
+        $haystack = $this->app['files']->get($migrationFile);
 
         foreach ($contains as $needle) {
             $this->assertStringContainsString($needle, $haystack, $message);
@@ -78,11 +151,18 @@ trait InteractsWithPublishedFiles
     /**
      * Assert file doesn't contains data.
      *
+     * @api
+     *
      * @param  array<int, string>  $contains
+     * @return void
      */
-    protected function assertMigrationFileNotContains(array $contains, string $file, string $message = ''): void
+    protected function assertMigrationFileDoesNotContains(array $contains, string $file, string $message = '', ?string $directory = null): void
     {
-        $haystack = $this->app['files']->get($this->getMigrationFile($file));
+        $migrationFile = $this->findFirstPublishedMigrationFile($file, $directory);
+
+        $this->assertTrue(! \is_null($migrationFile), "Assert migration file {$file} does exist");
+
+        $haystack = $this->app['files']->get($migrationFile);
 
         foreach ($contains as $needle) {
             $this->assertStringNotContainsString($needle, $haystack, $message);
@@ -90,7 +170,25 @@ trait InteractsWithPublishedFiles
     }
 
     /**
+     * Assert file doesn't contains data.
+     *
+     * @api
+     *
+     * @param  array<int, string>  $contains
+     * @return void
+     */
+    protected function assertMigrationFileNotContains(array $contains, string $file, string $message = '', ?string $directory = null): void
+    {
+        $this->assertMigrationFileDoesNotContains($contains, $file, $message, $directory);
+    }
+
+    /**
      * Assert filename exists.
+     *
+     * @api
+     *
+     * @param  string  $file
+     * @return void
      */
     protected function assertFilenameExists(string $file): void
     {
@@ -101,8 +199,13 @@ trait InteractsWithPublishedFiles
 
     /**
      * Assert filename not exists.
+     *
+     * @api
+     *
+     * @param  string  $file
+     * @return void
      */
-    protected function assertFilenameNotExists(string $file): void
+    protected function assertFilenameDoesNotExists(string $file): void
     {
         $appFile = $this->app->basePath($file);
 
@@ -110,41 +213,116 @@ trait InteractsWithPublishedFiles
     }
 
     /**
-     * Removes generated files.
+     * Assert filename not exists.
+     *
+     * @api
+     *
+     * @param  string  $file
+     * @return void
      */
-    protected function cleanUpFiles(): void
+    protected function assertFilenameNotExists(string $file): void
+    {
+        $this->assertFilenameDoesNotExists($file);
+    }
+
+    /**
+     * Assert migration filename exists.
+     *
+     * @api
+     *
+     * @param  string  $file
+     * @param  string|null  $directory
+     * @return void
+     */
+    protected function assertMigrationFileExists(string $file, ?string $directory = null): void
+    {
+        $migrationFile = $this->findFirstPublishedMigrationFile($file, $directory);
+
+        $this->assertTrue(! \is_null($migrationFile), "Assert migration file {$file} does exist");
+    }
+
+    /**
+     * Assert migration filename not exists.
+     *
+     * @api
+     *
+     * @param  string  $file
+     * @param  string|null  $directory
+     * @return void
+     */
+    protected function assertMigrationFileDoesNotExists(string $file, ?string $directory = null): void
+    {
+        $migrationFile = $this->findFirstPublishedMigrationFile($file, $directory);
+
+        $this->assertTrue(\is_null($migrationFile), "Assert migration file {$file} doesn't exist");
+    }
+
+    /**
+     * Assert migration filename not exists.
+     *
+     * @api
+     *
+     * @param  string  $file
+     * @param  string|null  $directory
+     * @return void
+     */
+    protected function assertMigrationFileNotExists(string $file, ?string $directory = null): void
+    {
+        $this->assertMigrationFileNotExists($file, $directory);
+    }
+
+    /**
+     * Removes generated files.
+     *
+     * @internal
+     *
+     * @return void
+     */
+    protected function cleanUpPublishedFiles(): void
     {
         $this->app['files']->delete(
-            Collection::make($this->files ?? [])
-                ->transform(function ($file) {
-                    return $this->app->basePath($file);
-                })
-                ->filter(function ($file) {
-                    return $this->app['files']->exists($file);
-                })->all()
+            (new Collection($this->files ?? []))
+                ->transform(fn ($file) => $this->app->basePath($file))
+                ->map(fn ($file) => str_contains($file, '*') ? [...$this->app['files']->glob($file)] : $file)
+                ->flatten()
+                ->filter(fn ($file) => $this->app['files']->exists($file))
+                ->reject(static fn ($file) => str_ends_with($file, '.gitkeep') || str_ends_with($file, '.gitignore'))
+                ->all()
         );
     }
 
     /**
      * Removes generated migration files.
+     *
+     * @api
+     *
+     * @param  string  $file
+     * @param  string|null  $directory
+     * @return void
      */
-    protected function getMigrationFile(string $filename): string
+    protected function findFirstPublishedMigrationFile(string $filename, ?string $directory = null): ?string
     {
-        $migrationPath = $this->app->databasePath('migrations');
+        $migrationPath = ! \is_null($directory)
+            ? $this->app->basePath($directory)
+            : $this->app->databasePath('migrations');
 
-        return $this->app['files']->glob("{$migrationPath}/*{$filename}")[0];
+        return $this->app['files']->glob(join_paths($migrationPath, "*{$filename}"))[0] ?? null;
     }
 
     /**
      * Removes generated migration files.
+     *
+     * @internal
+     *
+     * @return void
      */
-    protected function cleanUpMigrationFiles(): void
+    protected function cleanUpPublishedMigrationFiles(): void
     {
         $this->app['files']->delete(
-            Collection::make($this->app['files']->files($this->app->databasePath('migrations')))
-                ->filter(function ($file) {
-                    return Str::endsWith($file, '.php');
-                })->all()
+            (new Collection($this->app['files']->files($this->app->databasePath('migrations'))))
+                ->reject(fn ($file) => \in_array($file, $this->cachedExistingMigrationsFiles))
+                ->filter(static fn ($file) => str_ends_with($file, '.php'))
+                ->all()
         );
     }
 }

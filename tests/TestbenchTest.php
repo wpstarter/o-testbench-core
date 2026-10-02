@@ -4,27 +4,33 @@ namespace Orchestra\Testbench\Tests;
 
 use WpStarter\Contracts\Bus\QueueingDispatcher;
 use WpStarter\Queue\Queue;
-use Orchestra\Testbench\Tests\Fixtures\Jobs\CustomPayloadJob;
+use Orchestra\Testbench\Attributes\DefineEnvironment;
+use PHPUnit\Framework\Attributes\Test;
+use Workbench\App\Jobs\CustomPayloadJob;
 
-class TestbenchTest extends \Orchestra\Testbench\TestCase
+class TestbenchTest extends TestCase
 {
-    /**
-     * @test
-     * @define-env registerCustomQueuePayload
-     * @dataProvider customQueuePayloadDataProvider
-     */
+    #[Test]
+    public function it_can_resolve_uses_testing_concerns()
+    {
+        $this->assertTrue(static::usesTestingConcern(\Orchestra\Testbench\Concerns\Testing::class));
+        $this->assertFalse(static::usesTestingConcern(\Orchestra\Testbench\Concerns\WithWorkbench::class));
+    }
+
+    #[Test]
+    #[DefineEnvironment('registerCustomQueuePayload')]
     public function it_can_handle_custom_queue_payload()
     {
         $dispatcher = $this->app->make(QueueingDispatcher::class);
 
-        $dispatcher->dispatchToQueue(new CustomPayloadJob());
+        $dispatcher->dispatchToQueue(new CustomPayloadJob);
+
+        $this->addToAssertionCount(1);
     }
 
     protected function registerCustomQueuePayload($app)
     {
-        $app->bind('one.time.password', function () {
-            return random_int(1, 10);
-        });
+        $app->bind('one.time.password', fn () => random_int(1, 10));
 
         Queue::createPayloadUsing(function () use ($app) {
             $password = $app->make('one.time.password');
@@ -33,11 +39,5 @@ class TestbenchTest extends \Orchestra\Testbench\TestCase
 
             return ['password' => $password];
         });
-    }
-
-    public function customQueuePayloadDataProvider()
-    {
-        yield ['laravel.com'];
-        yield ['blog.laravel.com'];
     }
 }

@@ -4,16 +4,30 @@ namespace Orchestra\Testbench\Tests;
 
 use WpStarter\Foundation\Application;
 use Orchestra\Testbench\Concerns\CreatesApplication;
+use Orchestra\Testbench\Foundation\Application as Testbench;
+use Orchestra\Testbench\PHPUnit\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
-class CreatesApplicationTest extends \WpStarter\Foundation\Testing\TestCase
+class CreatesApplicationTest extends TestCase
 {
     use CreatesApplication;
 
-    /** @test */
+    /** {@inheritDoc} */
+    #[\Override]
+    protected function tearDown(): void
+    {
+        Testbench::flushState($this);
+
+        parent::tearDown();
+    }
+
+    #[Test]
     public function it_properly_loads_laravel_application()
     {
-        $this->assertInstanceOf(Application::class, $this->app);
-        $this->assertTrue($this->app->bound('config'));
-        $this->assertTrue($this->app->bound('view'));
+        $app = $this->createApplication();
+
+        $this->assertInstanceOf(Application::class, $app);
+        $this->assertTrue($app->bound('config'));
+        $this->assertTrue($app->bound('view'));
     }
 }

@@ -3,9 +3,19 @@
 namespace Orchestra\Testbench\Foundation\Console;
 
 use WpStarter\Support\Collection;
-use WpStarter\Support\Str;
 use NunoMaduro\Collision\Adapters\Laravel\Commands\TestCommand as Command;
+use Orchestra\Sidekick\Env;
+use Orchestra\Testbench\Features\ParallelRunner;
+use Symfony\Component\Console\Input\InputOption;
 
+use function Orchestra\Sidekick\is_testbench_cli;
+use function Orchestra\Sidekick\package_version_compare;
+use function Orchestra\Testbench\defined_environment_variables;
+use function Orchestra\Testbench\package_path;
+
+/**
+ * @codeCoverageIgnore
+ */
 class TestCommand extends Command
 {
     /**
@@ -15,8 +25,16 @@ class TestCommand extends Command
      */
     protected $signature = 'package:test
         {--without-tty : Disable output to TTY}
-        {--parallel : Indicates if the tests should run in parallel}
+        {--compact : Indicates whether the compact printer should be used}
+        {--configuration= : Read configuration from XML file}
+        {--coverage : Indicates whether the coverage information should be collected}
+        {--min= : Indicates the minimum threshold enforcement for coverage}
+        {--p|parallel : Indicates if the tests should run in parallel}
+        {--profile : Lists top 10 slowest tests}
         {--recreate-databases : Indicates if the test databases should be re-created}
+        {--drop-databases : Indicates if the test databases should be dropped}
+        {--without-databases : Indicates if database configuration should be performed}
+        {--c|--custom-argument : Add custom env variables}
     ';
 
     /**
@@ -26,55 +44,113 @@ class TestCommand extends Command
      */
     protected $description = 'Run the package tests';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    /** {@inheritDoc} */
+    #[\Override]
+    public function configure()
     {
-        parent::__construct();
+        parent::configure();
 
-        if (! \defined('TESTBENCH_WORKING_PATH')) {
+        if (! is_testbench_cli()) {
             $this->setHidden(true);
+        }
+
+        if (package_version_compare('nunomaduro/collision', '8.9.4', '>=')) {
+            $this->addOption(
+                name: 'without-cache',
+                mode: InputOption::VALUE_NONE,
+                description: 'Indicates if cache configuration should be performed',
+            );
         }
     }
 
-    /**
-     * Get the array of arguments for running PHPUnit.
-     *
-     * @param  array  $options
-     * @return array
-     */
-    protected function phpunitArguments($options)
+    /** {@inheritDoc} */
+    #[\Override]
+    public function handle()
     {
-        $options = Collection::make($options)
-            ->merge(['--printer=NunoMaduro\\Collision\\Adapters\\Phpunit\\Printer'])
-            ->reject(static function ($option) {
-                return Str::startsWith($option, '--env=');
-            })->values()->all();
+        Env::enablePutenv();
 
-        return array_merge(['--configuration=./'], $options);
+        return parent::handle();
     }
 
     /**
-     * Get the array of arguments for running Paratest.
+     * Get the PHPUnit configuration file path.
      *
-     * @param  array  $options
-     * @return array
+     * @return string
      */
+    public function phpUnitConfigurationFile()
+    {
+        $configurationFile = str_replace('./', '', $this->option('configuration') ?? 'phpunit.xml');
+
+        return (new Collection([
+            package_path($configurationFile),
+            package_path("{$configurationFile}.dist"),
+        ]))->transform(static fn ($path) => DIRECTORY_SEPARATOR.$path)
+            ->filter(static fn ($path) => is_file($path))
+            ->first() ?? './';
+    }
+
+    /** {@inheritDoc} */
+    #[\Override]
+    protected function phpunitArguments($options)
+    {
+        $file = $this->phpUnitConfigurationFile();
+
+        return (new Collection(parent::phpunitArguments($options)))
+            ->reject(static fn ($option) => str_starts_with($option, '--configuration='))
+            ->merge(["--configuration={$file}"])
+            ->all();
+    }
+
+    /** {@inheritDoc} */
+    #[\Override]
     protected function paratestArguments($options)
     {
-        $options = Collection::make($options)
-            ->reject(static function ($option) {
-                return Str::startsWith($option, '--env=')
-                    || Str::startsWith($option, '--parallel')
-                    || Str::startsWith($option, '--recreate-databases');
-            })->values()->all();
+        $file = $this->phpUnitConfigurationFile();
 
-        return array_merge([
-            '--configuration=./',
-            "--runner=\Orchestra\Testbench\Foundation\ParallelRunner",
-        ], $options);
+        return (new Collection(parent::paratestArguments($options)))
+            ->reject(static fn (string $option) => str_starts_with($option, '--configuration=') || str_starts_with($option, '--runner='))
+            ->merge([
+                \sprintf('--configuration=%s', $file),
+                \sprintf('--runner=%s', ParallelRunner::class),
+            ])->all();
+    }
+
+    /** {@inheritDoc} */
+    #[\Override]
+    protected function phpunitEnvironmentVariables()
+    {
+        return (new Collection(defined_environment_variables()))
+            ->merge([
+                'APP_ENV' => 'testing',
+                'TESTBENCH_PACKAGE_TESTER' => '(true)',
+                'TESTBENCH_WORKING_PATH' => package_path(),
+                'TESTBENCH_APP_BASE_PATH' => $this->laravel->basePath(),
+            ])->merge(parent::phpunitEnvironmentVariables())
+            ->all();
+    }
+
+    /** {@inheritDoc} */
+    #[\Override]
+    protected function paratestEnvironmentVariables()
+    {
+        return (new Collection(defined_environment_variables()))
+            ->merge([
+                'APP_ENV' => 'testing',
+                'TESTBENCH_PACKAGE_TESTER' => '(true)',
+                'TESTBENCH_WORKING_PATH' => package_path(),
+                'TESTBENCH_APP_BASE_PATH' => $this->laravel->basePath(),
+            ])->merge(parent::paratestEnvironmentVariables())
+            ->all();
+    }
+
+    /**
+     * Get the configuration file.
+     *
+     * @return string
+     */
+    #[\Override]
+    protected function getConfigurationFile()
+    {
+        return $this->phpUnitConfigurationFile();
     }
 }

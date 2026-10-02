@@ -1,0 +1,16 @@
+<?php
+
+namespace Orchestra\Testbench\Tests\Databases;
+
+use WpStarter\Support\Facades\DB;
+use Orchestra\Testbench\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+
+class DatabaseTest extends TestCase
+{
+    #[Test]
+    public function testbench_doesnt_automatically_create_database_connection()
+    {
+        $this->assertCount(0, DB::getConnections());
+    }
+}

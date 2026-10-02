@@ -2,7 +2,9 @@
 
 namespace Orchestra\Testbench\Tests\Fixtures\Providers;
 
-class CustomConfigServiceProvider extends \WpStarter\Support\ServiceProvider
+use WpStarter\Support\ServiceProvider;
+
+class CustomConfigServiceProvider extends ServiceProvider
 {
     public function register()
     {
@@ -11,7 +13,7 @@ class CustomConfigServiceProvider extends \WpStarter\Support\ServiceProvider
         ];
 
         foreach ($config as $name => $params) {
-            ws_config(['database.redis.'.$name => $params]);
+            config(['database.redis.'.$name => $params]);
         }
     }
 }

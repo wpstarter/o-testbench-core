@@ -2,16 +2,19 @@
 
 namespace Orchestra\Testbench\Tests;
 
-use Orchestra\Testbench\TestCase;
-use Orchestra\Testbench\Tests\Fixtures\Jobs\RegisterUser;
+use WpStarter\Support\Facades\Bus;
+use PHPUnit\Framework\Attributes\Test;
+use Workbench\App\Jobs\RegisterUser;
 
 class DispatchJobTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_can_triggers_expected_jobs()
     {
-        $this->expectsJobs(RegisterUser::class);
+        Bus::fake();
 
-        ws_dispatch(new RegisterUser());
+        dispatch(new RegisterUser);
+
+        Bus::assertDispatched(RegisterUser::class);
     }
 }

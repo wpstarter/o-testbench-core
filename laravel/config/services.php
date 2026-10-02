@@ -14,20 +14,25 @@ return [
     |
     */
 
-    'mailgun' => [
-        'domain' => ws_env('MAILGUN_DOMAIN'),
-        'secret' => ws_env('MAILGUN_SECRET'),
-        'endpoint' => ws_env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
-    ],
-
     'postmark' => [
         'token' => ws_env('POSTMARK_TOKEN'),
+    ],
+
+    'resend' => [
+        'key' => ws_env('RESEND_KEY'),
     ],
 
     'ses' => [
         'key' => ws_env('AWS_ACCESS_KEY_ID'),
         'secret' => ws_env('AWS_SECRET_ACCESS_KEY'),
         'region' => ws_env('AWS_DEFAULT_REGION', 'us-east-1'),
+    ],
+
+    'slack' => [
+        'notifications' => [
+            'bot_user_oauth_token' => ws_env('SLACK_BOT_USER_OAUTH_TOKEN'),
+            'channel' => ws_env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
+        ],
     ],
 
 ];

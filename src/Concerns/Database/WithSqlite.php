@@ -9,6 +9,11 @@ use WpStarter\Database\Schema\SQLiteBuilder;
 use WpStarter\Database\SQLiteConnection;
 use WpStarter\Support\Fluent;
 
+/**
+ * @api
+ *
+ * @codeCoverageIgnore
+ */
 trait WithSqlite
 {
     /**
@@ -29,13 +34,13 @@ trait WithSqlite
 
                     return new class($this) extends SQLiteBuilder
                     {
-                        protected function createBlueprint($table, Closure $callback = null)
+                        protected function createBlueprint($table, ?Closure $callback = null)
                         {
                             return new class($table, $callback) extends Blueprint
                             {
                                 public function dropForeign($index)
                                 {
-                                    return new Fluent();
+                                    return new Fluent;
                                 }
                             };
                         }

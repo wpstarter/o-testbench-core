@@ -2,29 +2,21 @@
 
 namespace Orchestra\Testbench;
 
-use WpStarter\Foundation\Testing\Concerns\InteractsWithAuthentication;
-use WpStarter\Foundation\Testing\Concerns\InteractsWithConsole;
-use WpStarter\Foundation\Testing\Concerns\InteractsWithContainer;
-use WpStarter\Foundation\Testing\Concerns\InteractsWithDatabase;
-use WpStarter\Foundation\Testing\Concerns\InteractsWithExceptionHandling;
-use WpStarter\Foundation\Testing\Concerns\InteractsWithSession;
-use WpStarter\Foundation\Testing\Concerns\InteractsWithTime;
-use WpStarter\Foundation\Testing\Concerns\MakesHttpRequests;
-use WpStarter\Foundation\Testing\Concerns\MocksApplicationServices;
-use PHPUnit\Framework\TestCase as PHPUnit;
+use WpStarter\Foundation\Testing;
 
-abstract class TestCase extends PHPUnit implements Contracts\TestCase
+abstract class TestCase extends PHPUnit\TestCase implements Contracts\TestCase
 {
-    use Concerns\Testing,
-        InteractsWithAuthentication,
-        InteractsWithConsole,
-        InteractsWithContainer,
-        InteractsWithDatabase,
-        InteractsWithExceptionHandling,
-        InteractsWithSession,
-        InteractsWithTime,
-        MakesHttpRequests,
-        MocksApplicationServices;
+    use Concerns\Testing;
+    use Testing\Concerns\InteractsWithAuthentication;
+    use Testing\Concerns\InteractsWithConsole;
+    use Testing\Concerns\InteractsWithContainer;
+    use Testing\Concerns\InteractsWithDatabase;
+    use Testing\Concerns\InteractsWithDeprecationHandling;
+    use Testing\Concerns\InteractsWithExceptionHandling;
+    use Testing\Concerns\InteractsWithSession;
+    use Testing\Concerns\InteractsWithTime;
+    use Testing\Concerns\InteractsWithViews;
+    use Testing\Concerns\MakesHttpRequests;
 
     /**
      * The base URL to use while testing the application.
@@ -34,10 +26,25 @@ abstract class TestCase extends PHPUnit implements Contracts\TestCase
     protected $baseUrl = 'http://localhost';
 
     /**
+     * Automatically loads environment file if available.
+     *
+     * @var bool
+     */
+    protected $loadEnvironmentVariables = true;
+
+    /**
+     * Automatically enables package discoveries.
+     *
+     * @var bool
+     */
+    protected $enablesPackageDiscoveries = false;
+
+    /**
      * Setup the test environment.
      *
      * @return void
      */
+    #[\Override]
     protected function setUp(): void
     {
         $this->setUpTheTestEnvironment();
@@ -48,6 +55,7 @@ abstract class TestCase extends PHPUnit implements Contracts\TestCase
      *
      * @return void
      */
+    #[\Override]
     protected function tearDown(): void
     {
         $this->tearDownTheTestEnvironment();
@@ -60,9 +68,47 @@ abstract class TestCase extends PHPUnit implements Contracts\TestCase
      */
     protected function setUpTraits()
     {
-        $uses = array_flip(ws_class_uses_recursive(static::class));
+        return $this->setUpTheTestEnvironmentTraits(static::cachedUsesForTestCase());
+    }
 
-        return $this->setUpTheTestEnvironmentTraits($uses);
+    /**
+     * Determine trait should be ignored from being autoloaded.
+     *
+     * @param  class-string  $use
+     * @return bool
+     */
+    protected function setUpTheTestEnvironmentTraitToBeIgnored(string $use): bool
+    {
+        return \in_array($use, [
+            Testing\RefreshDatabase::class,
+            Testing\DatabaseMigrations::class,
+            Testing\DatabaseTransactions::class,
+            Testing\WithoutMiddleware::class,
+            Testing\WithFaker::class,
+            Testing\Concerns\InteractsWithAuthentication::class,
+            Testing\Concerns\InteractsWithConsole::class,
+            Testing\Concerns\InteractsWithContainer::class,
+            Testing\Concerns\InteractsWithDatabase::class,
+            Testing\Concerns\InteractsWithDeprecationHandling::class,
+            Testing\Concerns\InteractsWithExceptionHandling::class,
+            Testing\Concerns\InteractsWithSession::class,
+            Testing\Concerns\InteractsWithTime::class,
+            Testing\Concerns\InteractsWithViews::class,
+            Testing\Concerns\MakesHttpRequests::class,
+            Concerns\ApplicationTestingHooks::class,
+            Concerns\CreatesApplication::class,
+            Concerns\HandlesAnnotations::class,
+            Concerns\HandlesDatabases::class,
+            Concerns\HandlesRoutes::class,
+            Concerns\InteractsWithPest::class,
+            Concerns\InteractsWithPHPUnit::class,
+            Concerns\InteractsWithTestCase::class,
+            Concerns\InteractsWithWorkbench::class,
+            Concerns\Testing::class,
+            Concerns\WithFactories::class,
+            Concerns\WithLaravelBootstrapFile::class,
+            Concerns\WithWorkbench::class,
+        ]);
     }
 
     /**
@@ -73,5 +119,47 @@ abstract class TestCase extends PHPUnit implements Contracts\TestCase
     protected function refreshApplication()
     {
         $this->app = $this->createApplication();
+    }
+
+    /**
+     * Prepare the testing environment before the running the test case.
+     *
+     * @return void
+     *
+     * @codeCoverageIgnore
+     */
+    #[\Override]
+    public static function setUpBeforeClass(): void
+    {
+        static::setUpBeforeClassUsingPHPUnit();
+
+        /** @phpstan-ignore class.notFound */
+        if (static::usesTestingConcern(Pest\WithPest::class)) {
+            static::setUpBeforeClassUsingPest(); /** @phpstan-ignore staticMethod.notFound */
+        }
+
+        static::setUpBeforeClassUsingTestCase();
+        static::setUpBeforeClassUsingWorkbench();
+    }
+
+    /**
+     * Clean up the testing environment before the next test case.
+     *
+     * @return void
+     *
+     * @codeCoverageIgnore
+     */
+    #[\Override]
+    public static function tearDownAfterClass(): void
+    {
+        static::tearDownAfterClassUsingWorkbench();
+        static::tearDownAfterClassUsingTestCase();
+
+        /** @phpstan-ignore class.notFound */
+        if (static::usesTestingConcern(Pest\WithPest::class)) {
+            static::tearDownAfterClassUsingPest(); /** @phpstan-ignore staticMethod.notFound */
+        }
+
+        static::tearDownAfterClassUsingPHPUnit();
     }
 }

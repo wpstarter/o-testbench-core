@@ -4,6 +4,9 @@ namespace Orchestra\Testbench\Foundation\Http;
 
 use WpStarter\Foundation\Http\Kernel as HttpKernel;
 
+/**
+ * @codeCoverageIgnore
+ */
 abstract class Kernel extends HttpKernel
 {
     /**
@@ -11,6 +14,7 @@ abstract class Kernel extends HttpKernel
      *
      * @return array
      */
+    #[\Override]
     protected function bootstrappers()
     {
         return [];

@@ -1,0 +1,9 @@
+providers:
+  - Orchestra\Testbench\Foundation\TestbenchServiceProvider
+
+env:
+  APP_DEBUG: false
+
+workbench:
+  start: /workbench
+  user: crynobone@gmail.com

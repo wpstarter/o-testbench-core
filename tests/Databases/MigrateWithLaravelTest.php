@@ -3,63 +3,57 @@
 namespace Orchestra\Testbench\Tests\Databases;
 
 use Carbon\Carbon;
-use Orchestra\Testbench\TestCase;
+use WpStarter\Support\Facades\DB;
+use WpStarter\Support\Facades\Hash;
+use Orchestra\Testbench\Attributes\DefineDatabase;
+use Orchestra\Testbench\Attributes\WithConfig;
+use Orchestra\Testbench\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
+use function Orchestra\Testbench\after_resolving;
+use function Orchestra\Testbench\default_migration_path;
+
+#[WithConfig('database.default', 'testing')]
 class MigrateWithLaravelTest extends TestCase
 {
-    /**
-     * Define environment setup.
-     *
-     * @param  \WpStarter\Foundation\Application  $app
-     * @return void
-     */
-    protected function defineEnvironment($app)
-    {
-        $app['config']->set('database.default', 'testing');
-    }
-
-    /**
-     * @test
-     * @define-db loadApplicationMigrations
-     */
+    #[Test]
+    #[DefineDatabase('loadApplicationMigrations')]
     public function it_loads_the_migrations()
     {
         $now = Carbon::now();
 
-        \DB::table('users')->insert([
+        DB::table('users')->insert([
             'name' => 'Orchestra',
-            'email' => 'hello@orchestraplatform.com',
+            'email' => 'crynobone@gmail.com',
             'password' => \Hash::make('456'),
             'created_at' => $now,
             'updated_at' => $now,
         ]);
 
-        $users = \DB::table('users')->where('id', '=', 1)->first();
+        $users = DB::table('users')->where('id', '=', 1)->first();
 
-        $this->assertEquals('hello@orchestraplatform.com', $users->email);
-        $this->assertTrue(\Hash::check('456', $users->password));
+        $this->assertEquals('crynobone@gmail.com', $users->email);
+        $this->assertTrue(Hash::check('456', $users->password));
     }
 
-    /**
-     * @test
-     * @define-db runApplicationMigrations
-     */
+    #[Test]
+    #[DefineDatabase('runApplicationMigrations')]
     public function it_runs_the_migrations()
     {
         $now = Carbon::now();
 
-        \DB::table('users')->insert([
+        DB::table('users')->insert([
             'name' => 'Orchestra',
-            'email' => 'hello@orchestraplatform.com',
-            'password' => \Hash::make('456'),
+            'email' => 'crynobone@gmail.com',
+            'password' => Hash::make('456'),
             'created_at' => $now,
             'updated_at' => $now,
         ]);
 
-        $users = \DB::table('users')->where('id', '=', 1)->first();
+        $users = DB::table('users')->where('id', '=', 1)->first();
 
-        $this->assertEquals('hello@orchestraplatform.com', $users->email);
-        $this->assertTrue(\Hash::check('456', $users->password));
+        $this->assertEquals('crynobone@gmail.com', $users->email);
+        $this->assertTrue(Hash::check('456', $users->password));
     }
 
     public function loadApplicationMigrations()
@@ -69,19 +63,10 @@ class MigrateWithLaravelTest extends TestCase
 
     public function runApplicationMigrations()
     {
-        $this->callAfterResolving('migrator', function ($migrator) {
-            $migrator->path(ws_base_path('migrations'));
+        after_resolving($this->app, 'migrator', function ($migrator) {
+            $migrator->path(default_migration_path());
         });
 
         $this->runLaravelMigrations(['--database' => 'testing']);
-    }
-
-    protected function callAfterResolving($name, $callback)
-    {
-        $this->app->afterResolving($name, $callback);
-
-        if ($this->app->resolved($name)) {
-            $callback($this->app->make($name), $this->app);
-        }
     }
 }

@@ -2,36 +2,26 @@
 
 namespace Orchestra\Testbench\Database;
 
-use WpStarter\Database\Migrations\Migrator;
-use function Orchestra\Testbench\artisan;
 use Orchestra\Testbench\Contracts\TestCase;
 
+use function Orchestra\Testbench\artisan;
+
+/**
+ * @internal
+ */
 class MigrateProcessor
 {
-    /**
-     * The testbench instance.
-     *
-     * @var \Orchestra\Testbench\Contracts\TestCase
-     */
-    protected $testbench;
-
-    /**
-     * The migrator options.
-     *
-     * @var array
-     */
-    protected $options = [];
-
     /**
      * Construct a new schema migrator.
      *
      * @param  \Orchestra\Testbench\Contracts\TestCase  $testbench
-     * @param  array  $options
+     * @param  array<string, mixed>  $options
      */
-    public function __construct(TestCase $testbench, array $options = [])
-    {
-        $this->testbench = $testbench;
-        $this->options = $options;
+    public function __construct(
+        protected readonly TestCase $testbench,
+        protected readonly array $options = []
+    ) {
+        //
     }
 
     /**

@@ -1,0 +1,59 @@
+<?php
+
+namespace Orchestra\Testbench\Tests\Functions;
+
+use Orchestra\Testbench\Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+
+use function WpStarter\Filesystem\join_paths;
+use function Orchestra\Testbench\package_path;
+
+#[Group('workbench')]
+class PackagePathTest extends TestCase
+{
+    #[Test]
+    public function it_can_use_package_path()
+    {
+        $this->assertSame(realpath(__DIR__.'/../../'), package_path());
+        $this->assertSame(implode('', [realpath(__DIR__.'/../../'), DIRECTORY_SEPARATOR]), package_path(DIRECTORY_SEPARATOR));
+    }
+
+    #[Test]
+    #[DataProvider(('pathDataProvider'))]
+    public function it_can_resolve_correct_package_path(string $path)
+    {
+        $this->assertSame(
+            realpath(join_paths(__DIR__, 'PackagePathTest.php')),
+            package_path(join_paths('./tests', 'Functions', 'PackagePathTest.php'))
+        );
+
+        $this->assertSame(
+            realpath(join_paths(__DIR__, 'PackagePathTest.php')),
+            package_path(join_paths('tests', 'Functions', 'PackagePathTest.php'))
+        );
+
+        $this->assertSame(
+            realpath(join_paths(__DIR__, 'PackagePathTest.php')),
+            package_path(DIRECTORY_SEPARATOR.join_paths('tests', 'Functions', 'PackagePathTest.php'))
+        );
+
+        $this->assertSame(
+            realpath(join_paths(__DIR__, 'PackagePathTest.php')),
+            package_path(join_paths('tests', 'Functions', 'PackagePathTest.php'))
+        );
+    }
+
+    public static function pathDataProvider()
+    {
+        yield [package_path('tests'.DIRECTORY_SEPARATOR.'Functions'.DIRECTORY_SEPARATOR.'PackagePathTest.php')];
+        yield [package_path('./tests'.DIRECTORY_SEPARATOR.'Functions'.DIRECTORY_SEPARATOR.'PackagePathTest.php')];
+        yield [package_path(DIRECTORY_SEPARATOR.'tests'.DIRECTORY_SEPARATOR.'Functions'.DIRECTORY_SEPARATOR.'PackagePathTest.php')];
+
+        yield [package_path('tests', 'Functions', 'PackagePathTest.php')];
+        yield [package_path(['tests', 'Functions', 'PackagePathTest.php'])];
+        yield [package_path('./tests', 'Functions', 'PackagePathTest.php')];
+        yield [package_path(['./tests', 'Functions', 'PackagePathTest.php'])];
+    }
+}

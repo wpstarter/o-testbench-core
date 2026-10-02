@@ -2,10 +2,34 @@
 
 namespace Orchestra\Testbench\Concerns;
 
+use WpStarter\Cache\RateLimiting\Limit;
+use WpStarter\Contracts\Console\Kernel as ConsoleKernelContract;
+use WpStarter\Contracts\Http\Kernel as HttpKernelContract;
 use WpStarter\Foundation\Application;
+use WpStarter\Foundation\Configuration\ApplicationBuilder;
+use WpStarter\Foundation\Configuration\Middleware;
+use WpStarter\Http\Request;
 use WpStarter\Support\Collection;
 use WpStarter\Support\Facades\Facade;
+use WpStarter\Support\Facades\RateLimiter;
+use WpStarter\Support\ServiceProvider;
+use Orchestra\Testbench\Attributes\DefineEnvironment;
+use Orchestra\Testbench\Attributes\RequiresEnv;
+use Orchestra\Testbench\Attributes\RequiresLaravel;
+use Orchestra\Testbench\Attributes\ResolvesLaravel;
+use Orchestra\Testbench\Attributes\UsesFrameworkConfiguration;
+use Orchestra\Testbench\Attributes\WithConfig;
+use Orchestra\Testbench\Attributes\WithEnv;
+use Orchestra\Testbench\Attributes\WithImmutableDates;
+use Orchestra\Testbench\Bootstrap\LoadEnvironmentVariables;
+use Orchestra\Testbench\Bootstrap\RegisterProviders;
+use Orchestra\Testbench\Features\TestingFeature;
 use Orchestra\Testbench\Foundation\PackageManifest;
+use PHPUnit\Framework\TestCase as PHPUnitTestCase;
+
+use function Orchestra\Sidekick\after_resolving;
+use function Orchestra\Testbench\default_skeleton_path;
+use function Orchestra\Testbench\refresh_router_lookups;
 
 /**
  * @property bool|null $enablesPackageDiscoveries
@@ -13,32 +37,37 @@ use Orchestra\Testbench\Foundation\PackageManifest;
  */
 trait CreatesApplication
 {
+    use InteractsWithWorkbench;
+    use WithLaravelBootstrapFile;
+
     /**
-     * Get Application's base path.
+     * Get the application's base path.
+     *
+     * @api
      *
      * @return string
      */
     public static function applicationBasePath()
     {
-        return $_ENV['APP_BASE_PATH'] ?? realpath(__DIR__.'/../../laravel');
+        return static::applicationBasePathUsingWorkbench() ?? default_skeleton_path();
     }
 
     /**
      * Ignore package discovery from.
      *
+     * @api
+     *
      * @return array<int, string>
      */
     public function ignorePackageDiscoveriesFrom()
     {
-        if (property_exists($this, 'enablesPackageDiscoveries') && $this->enablesPackageDiscoveries === true) {
-            return [];
-        }
-
-        return ['*'];
+        return $this->ignorePackageDiscoveriesFromUsingWorkbench() ?? ['*'];
     }
 
     /**
-     * Get application timezone.
+     * Get the application timezone.
+     *
+     * @api
      *
      * @param  \WpStarter\Foundation\Application  $app
      * @return string|null
@@ -51,6 +80,8 @@ trait CreatesApplication
     /**
      * Override application bindings.
      *
+     * @api
+     *
      * @param  \WpStarter\Foundation\Application  $app
      * @return array<string|class-string, string|class-string>
      */
@@ -61,6 +92,8 @@ trait CreatesApplication
 
     /**
      * Resolve application bindings.
+     *
+     * @internal
      *
      * @param  \WpStarter\Foundation\Application  $app
      * @return void
@@ -75,6 +108,8 @@ trait CreatesApplication
     /**
      * Get application aliases.
      *
+     * @api
+     *
      * @param  \WpStarter\Foundation\Application  $app
      * @return array<string, class-string>
      */
@@ -86,8 +121,10 @@ trait CreatesApplication
     /**
      * Override application aliases.
      *
+     * @api
+     *
      * @param  \WpStarter\Foundation\Application  $app
-     * @return array<string, class-string>
+     * @return array<string, class-string|false>
      */
     protected function overrideApplicationAliases($app)
     {
@@ -97,25 +134,33 @@ trait CreatesApplication
     /**
      * Resolve application aliases.
      *
+     * @internal
+     *
      * @param  \WpStarter\Foundation\Application  $app
      * @return array<string, class-string>
      */
     final protected function resolveApplicationAliases($app): array
     {
-        $aliases = new Collection($this->getApplicationAliases($app));
-        $overrides = $this->overrideApplicationAliases($app);
+        $aliases = (new Collection(
+            $this->getApplicationAliases($app)
+        ))->merge($this->getPackageAliases($app));
 
-        if (! empty($overrides)) {
+        if (! empty($overrides = $this->overrideApplicationAliases($app))) {
             $aliases->transform(static function ($alias, $name) use ($overrides) {
-                return $overrides[$name] ?? $alias;
+                return ws_with($overrides[$name] ?? $alias, static function ($alias) {
+                    return $alias !== false ? $alias : null;
+                });
             });
         }
 
-        return $aliases->merge($this->getPackageAliases($app))->all();
+        /** @var \WpStarter\Support\Collection<string, class-string> $aliases */
+        return $aliases->filter()->all();
     }
 
     /**
      * Get package aliases.
+     *
+     * @api
      *
      * @param  \WpStarter\Foundation\Application  $app
      * @return array<string, class-string>
@@ -128,30 +173,36 @@ trait CreatesApplication
     /**
      * Get package bootstrapper.
      *
+     * @api
+     *
      * @param  \WpStarter\Foundation\Application  $app
      * @return array<int, class-string>
      */
     protected function getPackageBootstrappers($app)
     {
-        return [];
+        return $this->getPackageBootstrappersUsingWorkbench($app) ?? [];
     }
 
     /**
      * Get application providers.
+     *
+     * @api
      *
      * @param  \WpStarter\Foundation\Application  $app
      * @return array<int, class-string>
      */
     protected function getApplicationProviders($app)
     {
-        return $app['config']['app.providers'];
+        return $app['config']['app.providers'] ?? ServiceProvider::defaultProviders()->toArray();
     }
 
     /**
      * Override application aliases.
      *
+     * @api
+     *
      * @param  \WpStarter\Foundation\Application  $app
-     * @return array<int, class-string>
+     * @return array<class-string, class-string|false>
      */
     protected function overrideApplicationProviders($app)
     {
@@ -161,40 +212,51 @@ trait CreatesApplication
     /**
      * Resolve application aliases.
      *
+     * @internal
+     *
      * @param  \WpStarter\Foundation\Application  $app
      * @return array<int, class-string>
      */
     final protected function resolveApplicationProviders($app): array
     {
-        $providers = new Collection($this->getApplicationProviders($app));
-        $overrides = $this->overrideApplicationProviders($app);
+        /** @var \WpStarter\Support\Collection<int, class-string> $providers */
+        $providers = (new Collection(
+            RegisterProviders::mergeAdditionalProvidersForTestbench($this->getApplicationProviders($app))
+        ))->merge($this->getPackageProviders($app));
 
-        if (! empty($overrides)) {
-            $providers->transform(static function ($provider) use ($overrides) {
-                return $overrides[$provider] ?? $provider;
+        if (! empty($overrides = $this->overrideApplicationProviders($app))) {
+            $providers->transform(static function (string $provider) use ($overrides) {
+                return ws_with($overrides[$provider] ?? $provider, static function ($provider) {
+                    return $provider !== false ? $provider : null;
+                });
             });
         }
 
-        return $providers->merge($this->getPackageProviders($app))->all();
+        /** @phpstan-ignore return.type */
+        return $providers->filter()->values()->all();
     }
 
     /**
      * Get package providers.
+     *
+     * @api
      *
      * @param  \WpStarter\Foundation\Application  $app
      * @return array<int, class-string>
      */
     protected function getPackageProviders($app)
     {
-        return [];
+        return $this->getPackageProvidersUsingWorkbench($app) ?? [];
     }
 
     /**
-     * Get base path.
+     * Resolve the application's base path.
+     *
+     * @internal
      *
      * @return string
      */
-    protected function getBasePath()
+    protected function getApplicationBasePath()
     {
         return static::applicationBasePath();
     }
@@ -202,7 +264,7 @@ trait CreatesApplication
     /**
      * Creates the application.
      *
-     * Needs to be implemented by subclasses.
+     * @internal
      *
      * @return \WpStarter\Foundation\Application
      */
@@ -210,162 +272,363 @@ trait CreatesApplication
     {
         $app = $this->resolveApplication();
 
+        $this->resolveApplicationFacades($app);
+
+        $this->resolveApplicationResolvingCallback($app);
+
         $this->resolveApplicationBindings($app);
         $this->resolveApplicationExceptionHandler($app);
         $this->resolveApplicationCore($app);
+        $this->resolveApplicationEnvironmentVariables($app);
         $this->resolveApplicationConfiguration($app);
         $this->resolveApplicationHttpKernel($app);
+        $this->resolveApplicationHttpMiddlewares($app);
         $this->resolveApplicationConsoleKernel($app);
         $this->resolveApplicationBootstrappers($app);
+        $this->refreshApplicationRouteNameLookups($app);
 
         return $app;
     }
 
     /**
+     * Create the default application implementation.
+     *
+     * @internal
+     *
+     * @return \WpStarter\Foundation\Application
+     */
+    final protected function resolveDefaultApplication()
+    {
+        return (new ApplicationBuilder(new Application($this->getApplicationBasePath())))
+            ->withProviders()
+            ->withMiddleware(static function ($middleware) {
+                //
+            })
+            ->withCommands()
+            ->create();
+    }
+
+    /**
      * Resolve application implementation.
+     *
+     * @api
      *
      * @return \WpStarter\Foundation\Application
      */
     protected function resolveApplication()
     {
-        return ws_tap(new Application($this->getBasePath()), function ($app) {
-            $app->bind(
-                'WpStarter\Foundation\Bootstrap\LoadConfiguration',
-                'Orchestra\Testbench\Bootstrap\LoadConfiguration'
-            );
+        static::$cacheApplicationBootstrapFile ??= $this->getApplicationBootstrapFile('app.php');
 
-            PackageManifest::swap($app, $this);
-        });
+        if (\is_string(static::$cacheApplicationBootstrapFile)) {
+            $APP_BASE_PATH = $this->getApplicationBasePath();
+
+            return require static::$cacheApplicationBootstrapFile;
+        }
+
+        return $this->resolveDefaultApplication();
+    }
+
+    /**
+     * Resolve application resolving callback.
+     *
+     * @param  \WpStarter\Foundation\Application  $app
+     * @return void
+     */
+    protected function resolveApplicationResolvingCallback($app): void
+    {
+        $app->bind(
+            'WpStarter\Foundation\Bootstrap\LoadConfiguration',
+            static::usesTestingConcern() && ! static::usesTestingConcern(WithWorkbench::class)
+                ? 'Orchestra\Testbench\Bootstrap\LoadConfiguration'
+                : 'Orchestra\Testbench\Bootstrap\LoadConfigurationWithWorkbench'
+        );
+
+        PackageManifest::swap($app, $this);
+    }
+
+    /**
+     * Resolve application facades implementation.
+     *
+     * @param  \WpStarter\Foundation\Application  $app
+     * @return void
+     */
+    protected function resolveApplicationFacades($app)
+    {
+        Facade::clearResolvedInstances();
+        Facade::setFacadeApplication($app);
+    }
+
+    /**
+     * Resolve application core environment variables implementation.
+     *
+     * @internal
+     *
+     * @param  \WpStarter\Foundation\Application  $app
+     * @return void
+     */
+    protected function resolveApplicationEnvironmentVariables($app)
+    {
+        if (property_exists($this, 'loadEnvironmentVariables') && $this->loadEnvironmentVariables === true) {
+            $app->make(LoadEnvironmentVariables::class)->bootstrap($app);
+        }
+
+        $attributeCallbacks = TestingFeature::run(
+            testCase: $this,
+            attribute: fn () => $this->parseTestMethodAttributes($app, WithEnv::class),
+        )->get('attribute');
+
+        TestingFeature::run(
+            testCase: $this,
+            attribute: function () use ($app) {
+                $this->parseTestMethodAttributes($app, RequiresEnv::class);
+                $this->parseTestMethodAttributes($app, RequiresLaravel::class);
+            },
+        );
+
+        if ($this instanceof PHPUnitTestCase && method_exists($this, 'beforeApplicationDestroyed')) {
+            $this->beforeApplicationDestroyed(static function () use ($attributeCallbacks) {
+                $attributeCallbacks->handle();
+            });
+        }
     }
 
     /**
      * Resolve application core configuration implementation.
+     *
+     * @internal
      *
      * @param  \WpStarter\Foundation\Application  $app
      * @return void
      */
     protected function resolveApplicationConfiguration($app)
     {
-        if (property_exists($this, 'loadEnvironmentVariables') && $this->loadEnvironmentVariables === true) {
-            $app->make('WpStarter\Foundation\Bootstrap\LoadEnvironmentVariables')->bootstrap($app);
-        }
+        TestingFeature::run(
+            testCase: $this,
+            attribute: function () use ($app) {
+                $this->parseTestMethodAttributes($app, ResolvesLaravel::class); /** @phpstan-ignore method.notFound */
+                $this->parseTestMethodAttributes($app, UsesFrameworkConfiguration::class); /** @phpstan-ignore method.notFound */
+            }
+        );
 
         $app->make('WpStarter\Foundation\Bootstrap\LoadConfiguration')->bootstrap($app);
+        $app->make('Orchestra\Testbench\Bootstrap\ConfigureRay')->bootstrap($app);
+        $app->make('Orchestra\Testbench\Foundation\Bootstrap\SyncDatabaseEnvironmentVariables')->bootstrap($app);
 
         ws_tap($this->getApplicationTimezone($app), static function ($timezone) {
             ! \is_null($timezone) && date_default_timezone_set($timezone);
         });
 
-        $app['config']['app.aliases'] = $this->resolveApplicationAliases($app);
-        $app['config']['app.providers'] = $this->resolveApplicationProviders($app);
+        ws_tap($app['config'], function ($config) use ($app) {
+            if (! $app->bound('env')) {
+                $app->detectEnvironment(static fn () => $config->get('app.env', 'workbench'));
+            }
+
+            if (\is_string($bootstrapProviderPath = $this->getApplicationBootstrapFile('providers.php'))) {
+                RegisterProviders::merge([], $bootstrapProviderPath);
+            }
+
+            $config->set([
+                'app.aliases' => $this->resolveApplicationAliases($app),
+                'app.providers' => $this->resolveApplicationProviders($app),
+            ]);
+
+            TestingFeature::run(
+                testCase: $this,
+                attribute: fn () => $this->parseTestMethodAttributes($app, WithConfig::class), /** @phpstan-ignore method.notFound */
+            );
+        });
     }
 
     /**
      * Resolve application core implementation.
+     *
+     * @internal
      *
      * @param  \WpStarter\Foundation\Application  $app
      * @return void
      */
     protected function resolveApplicationCore($app)
     {
-        Facade::clearResolvedInstances();
-        Facade::setFacadeApplication($app);
-
-        $app->detectEnvironment(static function () {
-            return 'testing';
-        });
+        if ($this->isRunningTestCase()) {
+            $app->detectEnvironment(static fn () => 'testing');
+        }
     }
 
     /**
      * Resolve application Console Kernel implementation.
+     *
+     * @api
      *
      * @param  \WpStarter\Foundation\Application  $app
      * @return void
      */
     protected function resolveApplicationConsoleKernel($app)
     {
-        $app->singleton('WpStarter\Contracts\Console\Kernel', 'Orchestra\Testbench\Console\Kernel');
+        $app->singleton(ConsoleKernelContract::class, $this->applicationConsoleKernelUsingWorkbench($app));
     }
 
     /**
      * Resolve application HTTP Kernel implementation.
+     *
+     * @api
      *
      * @param  \WpStarter\Foundation\Application  $app
      * @return void
      */
     protected function resolveApplicationHttpKernel($app)
     {
-        $app->singleton('WpStarter\Contracts\Http\Kernel', 'Orchestra\Testbench\Http\Kernel');
+        $app->singleton(HttpKernelContract::class, $this->applicationHttpKernelUsingWorkbench($app));
+    }
+
+    /**
+     * Resolve application HTTP default middlewares.
+     *
+     * @internal
+     *
+     * @param  \WpStarter\Foundation\Application  $app
+     * @return void
+     */
+    protected function resolveApplicationHttpMiddlewares($app)
+    {
+        after_resolving($app, HttpKernelContract::class, function ($kernel, $app) {
+            /** @var \WpStarter\Foundation\Http\Kernel $kernel */
+            $middleware = new Middleware;
+
+            $kernel->setGlobalMiddleware($middleware->getGlobalMiddleware());
+            $kernel->setMiddlewareGroups($middleware->getMiddlewareGroups());
+            $kernel->setMiddlewareAliases($middleware->getMiddlewareAliases());
+        });
     }
 
     /**
      * Resolve application HTTP exception handler.
+     *
+     * @api
      *
      * @param  \WpStarter\Foundation\Application  $app
      * @return void
      */
     protected function resolveApplicationExceptionHandler($app)
     {
-        $app->singleton('WpStarter\Contracts\Debug\ExceptionHandler', 'Orchestra\Testbench\Exceptions\Handler');
+        $app->singleton('WpStarter\Contracts\Debug\ExceptionHandler', $this->applicationExceptionHandlerUsingWorkbench($app));
     }
 
     /**
      * Resolve application bootstrapper.
+     *
+     * @internal
      *
      * @param  \WpStarter\Foundation\Application  $app
      * @return void
      */
     protected function resolveApplicationBootstrappers($app)
     {
-        $app->make('WpStarter\Foundation\Bootstrap\HandleExceptions')->bootstrap($app);
+        $app->make(
+            $this->isRunningTestCase()
+                ? 'Orchestra\Testbench\Bootstrap\HandleExceptions'
+                : 'WpStarter\Foundation\Bootstrap\HandleExceptions'
+        )->bootstrap($app);
+
         $app->make('WpStarter\Foundation\Bootstrap\RegisterFacades')->bootstrap($app);
         $app->make('WpStarter\Foundation\Bootstrap\SetRequestForConsole')->bootstrap($app);
-        $app->make('WpStarter\Foundation\Bootstrap\RegisterProviders')->bootstrap($app);
+        $app->make(RegisterProviders::class)->bootstrap($app);
 
         if (class_exists('WpStarter\Database\Eloquent\LegacyFactoryServiceProvider')) {
             $app->register('WpStarter\Database\Eloquent\LegacyFactoryServiceProvider');
         }
 
-        if (method_exists($this, 'parseTestMethodAnnotations')) {
-            $this->parseTestMethodAnnotations($app, 'environment-setup');
-            $this->parseTestMethodAnnotations($app, 'define-env');
+        TestingFeature::run(
+            testCase: $this,
+            default: function () use ($app) {
+                $this->defineEnvironment($app);
+                $this->getEnvironmentSetUp($app);
+            },
+            annotation: function () use ($app) {
+                $this->parseTestMethodAnnotations($app, 'environment-setup'); /** @phpstan-ignore method.notFound */
+                $this->parseTestMethodAnnotations($app, 'define-env'); /** @phpstan-ignore method.notFound */
+            },
+            attribute: function () use ($app) {
+                $this->parseTestMethodAttributes($app, WithImmutableDates::class); /** @phpstan-ignore method.notFound */
+                $this->parseTestMethodAttributes($app, DefineEnvironment::class); /** @phpstan-ignore method.notFound */
+            },
+            pest: fn () => $this->defineEnvironmentUsingPest($app), /** @phpstan-ignore method.notFound */
+        );
+
+        $this->resolveApplicationRateLimiting($app);
+
+        if (static::usesTestingConcern(WithWorkbench::class)) {
+            $this->bootDiscoverRoutesForWorkbench($app); /** @phpstan-ignore method.notFound */
         }
 
-        $this->defineEnvironment($app);
-        $this->getEnvironmentSetUp($app);
+        if ($this->isRunningTestCase() && static::usesTestingConcern(HandlesRoutes::class)) {
+            $app->booted(function () use ($app) {
+                $this->setUpApplicationRoutes($app); /** @phpstan-ignore method.notFound */
+            });
+        }
 
         $app->make('WpStarter\Foundation\Bootstrap\BootProviders')->bootstrap($app);
 
         foreach ($this->getPackageBootstrappers($app) as $bootstrap) {
-            $app->make($bootstrap)->bootstrap($app);
+            $app->make($bootstrap)->bootstrap($app); /** @phpstan-ignore method.notFound */
         }
 
-        $app->make('WpStarter\Contracts\Console\Kernel')->bootstrap();
+        $app->make(ConsoleKernelContract::class)->bootstrap();
+    }
 
-        $refreshNameLookups = static function ($app) {
-            $app['router']->getRoutes()->refreshNameLookups();
-        };
+    /**
+     * Refresh route name lookup for the application.
+     *
+     * @internal
+     *
+     * @param  \WpStarter\Foundation\Application  $app
+     * @return void
+     */
+    final protected function refreshApplicationRouteNameLookups($app): void
+    {
+        /** @var \WpStarter\Routing\Router $router */
+        $router = $app->make('router');
 
-        $refreshNameLookups($app);
+        refresh_router_lookups($router);
 
-        $app->resolving('url', static function ($url, $app) use ($refreshNameLookups) {
-            $refreshNameLookups($app);
+        after_resolving($app, 'url', static function ($url, $app) use ($router) {
+            refresh_router_lookups($router);
+        });
+    }
+
+    /**
+     * Resolve application rate limiting configuration.
+     *
+     * @api
+     *
+     * @param  \WpStarter\Foundation\Application  $app
+     * @return void
+     */
+    protected function resolveApplicationRateLimiting($app)
+    {
+        after_resolving($app, 'cache.store', function () {
+            RateLimiter::for(
+                'api', static fn (Request $request) => Limit::perMinute(60)->by($request->user()?->id ?: $request->ip())
+            );
         });
     }
 
     /**
      * Reset artisan commands for the application.
      *
+     * @internal
+     *
      * @param  \WpStarter\Foundation\Application  $app
      * @return void
      */
-    final protected function resetApplicationArtisanCommands($app)
+    final protected function resetApplicationArtisanCommands($app): void
     {
-        $app['WpStarter\Contracts\Console\Kernel']->setArtisan(null);
+        $app[ConsoleKernelContract::class]->setArtisan(null);
     }
 
     /**
      * Define environment setup.
+     *
+     * @api
      *
      * @param  \WpStarter\Foundation\Application  $app
      * @return void
@@ -378,8 +641,12 @@ trait CreatesApplication
     /**
      * Define environment setup.
      *
+     * @api
+     *
      * @param  \WpStarter\Foundation\Application  $app
      * @return void
+     *
+     * @deprecated 10.0 Use "defineEnvironment()" instead.
      */
     protected function getEnvironmentSetUp($app)
     {

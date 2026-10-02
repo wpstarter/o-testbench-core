@@ -1,0 +1,47 @@
+<?php
+
+namespace Orchestra\Testbench\Tests\Foundation;
+
+use WpStarter\Foundation\Console\Kernel as ConsoleKernel;
+use NunoMaduro\Collision\Adapters\Laravel\Commands\TestCommand as CollisionTestCommand;
+use Orchestra\Testbench\Foundation\Console\TestCommand;
+use Orchestra\Testbench\Foundation\Console\TestFallbackCommand;
+use Orchestra\Testbench\Foundation\TestbenchServiceProvider;
+use Orchestra\Testbench\Tests\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+
+#[CoversClass(TestbenchServiceProvider::class)]
+class TestbenchServiceProviderTest extends TestCase
+{
+    /** {@inheritDoc} */
+    #[\Override]
+    protected function getPackageProviders($app)
+    {
+        return [
+            TestbenchServiceProvider::class,
+        ];
+    }
+
+    #[Test]
+    public function it_register_the_correct_command()
+    {
+        ws_tap($this->app[ConsoleKernel::class]->all(), function ($commands) {
+            $this->assertArrayHasKey('package:test', $commands);
+            $this->assertInstanceOf(
+                $this->isCollisionDependenciesInstalled() ? TestCommand::class : TestFallbackCommand::class,
+                $commands['package:test']
+            );
+        });
+    }
+
+    /**
+     * Check if the parallel dependencies are installed.
+     *
+     * @return bool
+     */
+    protected function isCollisionDependenciesInstalled(): bool
+    {
+        return class_exists(CollisionTestCommand::class);
+    }
+}

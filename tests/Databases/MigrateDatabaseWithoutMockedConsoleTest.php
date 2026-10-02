@@ -2,53 +2,35 @@
 
 namespace Orchestra\Testbench\Tests\Databases;
 
-use Orchestra\Testbench\TestCase;
+use WpStarter\Support\Facades\DB;
+use WpStarter\Support\Facades\Hash;
+use WpStarter\Support\Facades\Schema;
+use Orchestra\Testbench\Attributes\WithConfig;
+use Orchestra\Testbench\Concerns\WithWorkbench;
+use Orchestra\Testbench\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
+use function Orchestra\Testbench\artisan;
+
+#[WithConfig('database.default', 'testing')]
 class MigrateDatabaseWithoutMockedConsoleTest extends TestCase
 {
-    /**
-     * Define environment setup.
-     *
-     * @param  \WpStarter\Foundation\Application  $app
-     * @return void
-     */
-    protected function defineEnvironment($app)
-    {
-        $app['config']->set('database.default', 'testing');
-    }
+    use WithWorkbench;
 
-    /**
-     * Define database migrations.
-     *
-     * @return void
-     */
+    /** {@inheritDoc} */
+    #[\Override]
     protected function defineDatabaseMigrations()
     {
-        $this->withoutMockingConsoleOutput();
-
-        $this->artisan('migrate', ['--database' => 'testing']);
+        artisan($this, 'migrate', ['--database' => 'testing']);
     }
 
-    /**
-     * Get package providers.
-     *
-     * @param  \WpStarter\Foundation\Application  $app
-     * @return array
-     */
-    protected function getPackageProviders($app)
-    {
-        return [
-            \Orchestra\Testbench\Tests\Fixtures\Providers\ServiceProvider::class,
-        ];
-    }
-
-    /** @test */
+    #[Test]
     public function it_runs_the_migrations_without_mocked_console()
     {
-        $users = \DB::table('testbench_users')->where('id', '=', 1)->first();
+        $users = DB::table('testbench_users')->where('id', '=', 1)->first();
 
-        $this->assertEquals('hello@orchestraplatform.com', $users->email);
-        $this->assertTrue(\Hash::check('123', $users->password));
+        $this->assertEquals('crynobone@gmail.com', $users->email);
+        $this->assertTrue(Hash::check('123', $users->password));
 
         $this->assertEquals([
             'id',
@@ -56,6 +38,6 @@ class MigrateDatabaseWithoutMockedConsoleTest extends TestCase
             'password',
             'created_at',
             'updated_at',
-        ], \Schema::getColumnListing('testbench_users'));
+        ], Schema::getColumnListing('testbench_users'));
     }
 }

@@ -5,17 +5,30 @@ namespace Orchestra\Testbench\Concerns;
 use Exception;
 use WpStarter\Database\Eloquent\Factory as ModelFactory;
 
+use function Orchestra\Testbench\laravel_or_fail;
+
+/**
+ * @api
+ *
+ * @deprecated
+ *
+ * @codeCoverageIgnore
+ */
 trait WithFactories
 {
     /**
      * Load model factories from path.
      *
+     * @internal
+     *
      * @param  string  $path
      * @return $this
+     *
+     * @throws \Exception
      */
     protected function withFactories(string $path)
     {
-        return $this->loadFactoriesUsing($this->app, $path);
+        return $this->loadFactoriesUsing(laravel_or_fail($this->app), $path);
     }
 
     /**
@@ -24,12 +37,14 @@ trait WithFactories
      * @param  \WpStarter\Contracts\Foundation\Application  $app
      * @param  string  $path
      * @return $this
+     *
+     * @throws \Exception
      */
     protected function loadFactoriesUsing($app, string $path)
     {
         if (! class_exists(ModelFactory::class)) {
             throw new Exception(<<<'requirement'
-Missing `laravel/legacy-factories` in composer.json. Please refer to <https://github.com/orchestral/testbench/blob/6.x/README.md#using-legacy-factories>
+Missing `laravel/legacy-factories` in composer.json. Please refer to <https://packages.tools/testbench/troubleshooting.html#class-illuminate-database-eloquent-factory-not-found>
 requirement);
         }
 

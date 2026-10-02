@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a71552ea-0ae3-4804-8a72-f9e1d3fc954e" name="Changes" comment="Update package name">
+      <change afterPath="$PROJECT_DIR$/.github/workflows/analyse.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/collision-tests.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/parallel-tests.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/strict-tests.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/tests.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/update-skeleton.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/laravel-idea.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/o-testbench-core.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bin/configure-skeleton.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bin/sync" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/laravel/.env.example" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/laravel/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/laravel/artisan" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/laravel/bootstrap/.testbench-default-skeleton" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/laravel/bootstrap/autoload.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/laravel/bootstrap/providers.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/laravel/config/concurrency.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/laravel/lang/en.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/laravel/migrations/0001_01_01_000000_testbench_create_users_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/laravel/migrations/0001_01_01_000001_testbench_create_cache_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/laravel/migrations/0001_01_01_000002_testbench_create_jobs_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/laravel/migrations/notifications/0001_01_02_000000_testbench_create_notifications_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/laravel/tests/CreatesApplication.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/sidekick/composer.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/sidekick/phpstan-baseline.neon" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/sidekick/src/Console/Concerns/ConfiguresPrompts.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/sidekick/src/Console/Task.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/sidekick/src/Eloquent/Concerns/HasPreviousAttributes.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/sidekick/src/Eloquent/Watcher.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/sidekick/src/Eloquent/functions.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/sidekick/src/Env.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/sidekick/src/Filesystem/functions.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/sidekick/src/FluentDecorator.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/sidekick/src/Http/functions.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/sidekick/src/PhpExecutableFinder.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/sidekick/src/SensitiveValue.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/sidekick/src/UndefinedValue.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/sidekick/src/functions.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/phpstan-baseline.neon" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/phpstan.neon.dist" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Attributes/Define.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Attributes/DefineDatabase.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Attributes/DefineEnvironment.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Attributes/DefineRoute.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Attributes/RequiresDatabase.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Attributes/RequiresEnv.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Attributes/RequiresLaravel.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Attributes/ResetRefreshDatabaseState.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Attributes/ResolvesLaravel.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Attributes/UsesFrameworkConfiguration.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Attributes/UsesVendor.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Attributes/WithCachedViews.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Attributes/WithConfig.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Attributes/WithEnv.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Attributes/WithImmutableDates.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Attributes/WithMigration.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Bootstrap/ConfigureRay.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Bootstrap/HandleExceptions.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Bootstrap/LoadConfigurationWithWorkbench.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Bootstrap/LoadEnvironmentVariables.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Bootstrap/RegisterProviders.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Bootstrap/stubs/.env.testbench" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Concerns/ApplicationTestingHooks.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Concerns/Database/InteractsWithSqliteDatabaseFile.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Concerns/HandlesAssertions.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Concerns/HandlesAttributes.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Concerns/InteractsWithMigrations.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Concerns/InteractsWithMockery.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Concerns/InteractsWithPHPUnit.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Concerns/InteractsWithPest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Concerns/InteractsWithTestCase.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Concerns/InteractsWithWorkbench.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Concerns/WithFixtures.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Concerns/WithLaravelBootstrapFile.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Concerns/WithWorkbench.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Concerns/stubs/routes.stub" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Contracts/Attributes/Actionable.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Contracts/Attributes/AfterAll.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Contracts/Attributes/AfterEach.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Contracts/Attributes/BeforeAll.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Contracts/Attributes/BeforeEach.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Contracts/Attributes/Invokable.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Contracts/Attributes/Resolvable.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Contracts/Attributes/TestingFeature.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Contracts/Config.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Exceptions/ApplicationNotAvailableException.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Exceptions/DeprecatedException.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Exceptions/PHPUnitErrorException.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Features/FeaturesCollection.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Features/ParallelRunner.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Features/TestingFeature.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Actions/CreateVendorSymlink.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Actions/DeleteVendorSymlink.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Actions/RefreshPackageDiscovery.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Bootstrap/CreateVendorSymlink.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Bootstrap/EnsuresDefaultConfiguration.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Bootstrap/LoadEnvironmentVariablesFromArray.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Bootstrap/LoadMigrationsFromArray.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Bootstrap/SyncDatabaseEnvironmentVariables.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Bootstrap/SyncTestbenchCachedRoutes.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Concerns/HandlesDatabaseConnections.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Config.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/Actions/Action.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/Actions/DeleteDirectories.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/Actions/DeleteFiles.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/Actions/EnsureDirectoryExists.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/Actions/GeneratesFile.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/Actions/RunCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/Actions/stubs/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/Concerns/CopyTestbenchFiles.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/Concerns/HandleTerminatingConsole.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/CreateSqliteDbCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/DropSqliteDbCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/PurgeSkeletonCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/ServeCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/Signals.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/SyncSkeletonCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/TerminatingConsole.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/VendorPublishCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Console/stubs/database.sqlite.example" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Env.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Events/ServeCommandEnded.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Events/ServeCommandStarted.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Process/ProcessDecorator.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Process/ProcessResult.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Foundation/Process/RemoteCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/PHPUnit/AttributeParser.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/PHPUnit/TestCase.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Workbench/Actions/AddAssetSymlinkFolders.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Workbench/Actions/RemoveAssetSymlinkFolders.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Workbench/Workbench.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/functions.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/AssertPublishedFilesTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/AttributeEnvironmentSetupTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/AttributesInheritanceTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/DefineDatabaseTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/DefineRouteTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/DefineTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/RequiresDatabaseTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/RequiresEnvTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/RequiresLaravelTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/ResolvesLaravelTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/UsesFrameworkConfigurationTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/UsesTestingFeaturesTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/UsesVendorTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/WithCachedViewsTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/WithConfigTest.fixtures.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/WithConfigTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/WithEnvTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/WithImmutableDatesTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/WithMigrationTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Attributes/config/testbench.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Concerns/HandlesAssertionsTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Concerns/InteractsWithPHPUnitTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Databases/DatabaseMigrationsTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Databases/DatabaseMigrationsUsingEventsTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Databases/DatabaseTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Databases/MigrateWithLaravelMigrationsTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Databases/MigrateWithLaravelMigrationsUsingDatabaseMigrationsTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Databases/MigrateWithLaravelMigrationsUsingRefreshDatabaseTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Databases/RefreshDatabaseUsingEventsTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Databases/RefreshDatabaseWithMigrationWithinSetUpTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Databases/WithMigrationAttributeTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Exceptions/DeprecatedExceptionTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Factories/UserFactoryTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/ApplicationTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/Bootstrap/CreateVendorSymlinkTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/Bootstrap/LoadMigrationsFromArrayTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/Concerns/HandlesDatabaseConnectionsTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/ConfigTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/Console/Actions/DeleteDirectoriesTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/Console/Actions/DeleteFilesTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/Console/Actions/EnsureDirectoryExistsTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/Console/Actions/GeneratesFileTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/Console/CreateSqliteDbCommandTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/Console/DropSqliteDbCommandTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/Console/TerminatingConsoleTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/EnvTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/PackageManifestTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/Process/RemoteCommandTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/TestbenchServiceProviderTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Foundation/stubs/testbench.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Functions/ArtisanTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Functions/PackagePathTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Functions/ParseEnvironmentVariablesTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Functions/TransformRealpathToRelativeTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/HelpersTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/ApplicationProvidersTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/ApplicationProvidersWithDisabledServicesTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/ArtisanTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/CacheRouteTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/CommandTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/EncryptionTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/EnvironmentVariablesTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/InlineCacheRouteTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/LatestResponseExceptionTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/LoadUsingFrameworkConfigurationTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/Php84Test.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/RequestTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/RouteServiceProviderHealthTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/RouteTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/SlimSkeletonApplicationTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/StashRouteTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/WithFakerTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Integrations/fixtures/web.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/PHPUnit/AttributeParserTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/PhpUnit10DeprecationsTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/TestCase.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/WithWorkbenchTest.fixtures.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/WithWorkbenchTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Workbench/ActionsTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Workbench/DiscoversTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Workbench/ErrorPageTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Workbench/HelpersTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/types/functions.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/app/Models/User.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/app/Providers/AppServiceProvider.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/app/Providers/WorkbenchServiceProvider.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/app/View/Components/Alert.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/bootstrap/app.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/bootstrap/providers.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/bootstrap/web.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/config/nested/workbench.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/config/workbench.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/database/factories/UserFactory.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/database/seeders/DatabaseSeeder.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/database/seeders/TestbenchDatabaseSeeder.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/lang/en/welcome.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/resources/views/components/notification.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/resources/views/dashboard.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/resources/views/errors/418.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/resources/views/testbench.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/routes/api.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/routes/console.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workbench/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.coveralls.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" afterPath="$PROJECT_DIR$/.gitattributes" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/FUNDING.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/FUNDING.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/audits.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/audits.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/collision-tests.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/coveralls.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/coveralls.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/parallel-tests.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/tests.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.php_cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CONTRIBUTING.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/canvas.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create-sqlite-db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/drop-sqlite-db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/bootstrap/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/bootstrap/app.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/config/app.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/config/auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/config/auth.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/config/broadcasting.php" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/config/broadcasting.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/config/cache.php" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/config/cache.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/config/database.php" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/config/database.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/config/filesystems.php" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/config/filesystems.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/config/hashing.php" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/config/hashing.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/config/logging.php" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/config/logging.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/config/mail.php" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/config/mail.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/config/queue.php" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/config/queue.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/config/sanctum.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/config/services.php" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/config/services.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/config/session.php" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/config/session.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/migrations/2014_10_12_000000_testbench_create_users_table.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/migrations/2014_10_12_100000_testbench_create_password_resets_table.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/migrations/2019_08_19_000000_testbench_create_failed_jobs_table.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/public/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/public/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/resources/lang/en/auth.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/resources/lang/en/pagination.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/resources/lang/en/passwords.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/resources/lang/en/validation.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/resources/views/welcome.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/resources/views/welcome.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/laravel/server.php" beforeDir="false" afterPath="$PROJECT_DIR$/laravel/server.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phpunit.xml" beforeDir="false" afterPath="$PROJECT_DIR$/phpunit.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Bootstrap/LoadConfiguration.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bootstrap/LoadConfiguration.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Concerns/CreatesApplication.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Concerns/CreatesApplication.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Concerns/Database/HandlesConnections.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Concerns/Database/WithSqlite.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Concerns/Database/WithSqlite.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Concerns/HandlesAnnotations.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Concerns/HandlesAnnotations.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Concerns/HandlesDatabases.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Concerns/HandlesDatabases.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Concerns/HandlesRoutes.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Concerns/HandlesRoutes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Concerns/InteractsWithPublishedFiles.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Concerns/InteractsWithPublishedFiles.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Concerns/Testing.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Concerns/Testing.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Concerns/WithFactories.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Concerns/WithFactories.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Concerns/WithLaravelMigrations.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Concerns/WithLaravelMigrations.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Concerns/WithLoadMigrationsFrom.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Console/Commander.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Console/Commander.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Console/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Console/Kernel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Contracts/Laravel.stub" beforeDir="false" afterPath="$PROJECT_DIR$/src/Contracts/Laravel.stub" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Database/MigrateProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Database/MigrateProcessor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Exceptions/Handler.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exceptions/Handler.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Factories/UserFactory.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Factories/UserFactory.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Foundation/Application.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Foundation/Application.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Foundation/Console/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Foundation/Console/Kernel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Foundation/Console/TestCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Foundation/Console/TestCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Foundation/Console/TestFallbackCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Foundation/Console/TestFallbackCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Foundation/Http/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Foundation/Http/Kernel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Foundation/PackageManifest.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Foundation/PackageManifest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Foundation/ParallelRunner.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Foundation/TestbenchServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Foundation/TestbenchServiceProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Http/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Http/Kernel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Http/Middleware/Authenticate.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Http/Middleware/RedirectIfAuthenticated.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Http/Middleware/TrimStrings.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Http/Middleware/TrustProxies.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Http/Middleware/VerifyCsrfToken.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TestCase.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/TestCase.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/helpers.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sync.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testbench" beforeDir="false" afterPath="$PROJECT_DIR$/testbench" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testbench.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/testbench.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/AnnotationDefineEnvTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/AnnotationDefineEnvTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/AnnotationEnvironmentSetupTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/AnnotationEnvironmentSetupTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ApplicationTest.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/CacheRouteTest.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/CommandTest.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/CommanderTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CommanderTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ConfigTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Integrations/ConfigTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/CreatesApplicationTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CreatesApplicationTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Databases/MigrateDatabaseTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Databases/MigrateDatabaseTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Databases/MigrateDatabaseWithoutMockedConsoleTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Databases/MigrateDatabaseWithoutMockedConsoleTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Databases/MigrateWithLaravelTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Databases/MigrateWithLaravelTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Databases/MigrateWithRealpathAndLaravelTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Databases/MigrateWithRealpathAndLaravelTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Databases/MigrateWithRealpathTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Databases/MigrateWithRealpathTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Databases/RefreshDatabaseTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Databases/RefreshDatabaseTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/DefaultConfigurationTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/DefaultConfigurationTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/DiscoverPackagesTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/DiscoverPackagesTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/DontDiscoverPackagesTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/DontDiscoverPackagesTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Fixtures/Commands/DummyCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/workbench/app/Console/Commands/DummyCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Fixtures/Controllers/Controller.php" beforeDir="false" afterPath="$PROJECT_DIR$/workbench/app/Http/Controllers/ExampleController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Fixtures/Jobs/CustomPayloadJob.php" beforeDir="false" afterPath="$PROJECT_DIR$/workbench/app/Jobs/CustomPayloadJob.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Fixtures/Jobs/RegisterUser.php" beforeDir="false" afterPath="$PROJECT_DIR$/workbench/app/Jobs/RegisterUser.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Fixtures/Providers/ChildServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Fixtures/Providers/ChildServiceProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Fixtures/Providers/CustomConfigServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Fixtures/Providers/CustomConfigServiceProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Fixtures/Providers/DeferredChildServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Fixtures/Providers/DeferredChildServiceProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Fixtures/Providers/ServiceProvider.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/InlineCacheRouteTest.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Integrations/AggregateServiceProviderTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Integrations/AggregateServiceProviderTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Integrations/CustomConfigurationTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Integrations/CustomConfigurationTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Integrations/DispatchJobTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Integrations/DispatchJobTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Integrations/TranslationTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Integrations/TranslationTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/PackageManifestTest.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RequestTest.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteTest.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/TestCaseTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/TestCaseTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/TestbenchTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/TestbenchTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/TimezoneTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/TimezoneTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/migrations/2013_07_26_182750_create_testbench_users_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/workbench/database/migrations/2013_07_26_182750_create_testbench_users_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/tmp/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Foundation/tmp/.gitignore" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerConfigs">
+    <option name="configs">
+      <option value="$PROJECT_DIR$/laravel/composer.json" />
+    </option>
+  </component>
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
+    <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
+    <execution>
+      <execution />
+    </execution>
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="154" />
+    <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.0" />
+      <entry key="S10" value="1.0000000001686908" />
+      <entry key="S30" value="1.0015241858497566" />
+      <entry key="S60" value="1.1491475561598241" />
+      <entry key="M2" value="2.834082874714304" />
+      <entry key="M5" value="10.344853275317094" />
+      <entry key="M10" value="18.13852892561357" />
+      <entry key="M15" value="23.030144176061356" />
+      <entry key="M30" value="32.74221936533549" />
+      <entry key="H1" value="42.87004103792575" />
+      <entry key="H2" value="50.84079494958256" />
+      <entry key="H4" value="55.94057722356528" />
+      <entry key="D1" value="60.915132712997895" />
+      <entry key="W1" value="61.84306337849796" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="8.27500831582157E-124" />
+      <entry key="S5" value="8.669098835073743E-50" />
+      <entry key="S10" value="4.147720778265177E-25" />
+      <entry key="S30" value="1.1827991341363033E-8" />
+      <entry key="S60" value="1.5378821801108268E-4" />
+      <entry key="M2" value="0.0175373782834483" />
+      <entry key="M5" value="0.300746802539326" />
+      <entry key="M10" value="0.7755593406618315" />
+      <entry key="M15" value="1.0635385792195482" />
+      <entry key="M30" value="1.4584500821279138" />
+      <entry key="H1" value="1.7078934355589512" />
+      <entry key="H2" value="1.8481847362454764" />
+      <entry key="H4" value="1.9225944602203198" />
+      <entry key="D1" value="1.9868859743247724" />
+      <entry key="W1" value="1.9981212816550171" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.1339716828170366" />
+      <entry key="MS500" value="0.668963777393056" />
+      <entry key="S2" value="0.9043793775610881" />
+      <entry key="S5" value="0.9605948639534767" />
+      <entry key="S10" value="0.98009941549881" />
+      <entry key="S30" value="0.9948073918606138" />
+      <entry key="S60" value="1.143940736067994" />
+      <entry key="M2" value="2.836775484113762" />
+      <entry key="M5" value="10.61705906597099" />
+      <entry key="M10" value="18.888732543114315" />
+      <entry key="M15" value="24.072978960761784" />
+      <entry key="M30" value="34.18763149317751" />
+      <entry key="H1" value="44.57038424069626" />
+      <entry key="H2" value="52.684849479844864" />
+      <entry key="H4" value="57.86099888978261" />
+      <entry key="D1" value="62.90163951918354" />
+      <entry key="W1" value="63.84113004502809" />
+    </decayedShown>
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP">
+    <include_path>
+      <path value="$PROJECT_DIR$/vendor/brick/math" />
+      <path value="$PROJECT_DIR$/vendor/voku/portable-ascii" />
+      <path value="$PROJECT_DIR$/vendor/nette/utils" />
+      <path value="$PROJECT_DIR$/vendor/nette/schema" />
+      <path value="$PROJECT_DIR$/vendor/league/commonmark" />
+      <path value="$PROJECT_DIR$/vendor/nikic/php-parser" />
+      <path value="$PROJECT_DIR$/vendor/league/flysystem" />
+      <path value="$PROJECT_DIR$/vendor/league/config" />
+      <path value="$PROJECT_DIR$/vendor/league/mime-type-detection" />
+      <path value="$PROJECT_DIR$/vendor/league/flysystem-local" />
+      <path value="$PROJECT_DIR$/vendor/league/uri-interfaces" />
+      <path value="$PROJECT_DIR$/vendor/league/uri" />
+      <path value="$PROJECT_DIR$/vendor/nesbot/carbon" />
+      <path value="$PROJECT_DIR$/vendor/ramsey/collection" />
+      <path value="$PROJECT_DIR$/vendor/ramsey/uuid" />
+      <path value="$PROJECT_DIR$/vendor/staabm/side-effects-detector" />
+      <path value="$PROJECT_DIR$/vendor/dflydev/dot-access-data" />
+      <path value="$PROJECT_DIR$/vendor/vlucas/phpdotenv" />
+      <path value="$PROJECT_DIR$/vendor/egulias/email-validator" />
+      <path value="$PROJECT_DIR$/vendor/mockery/mockery" />
+      <path value="$PROJECT_DIR$/vendor/myclabs/deep-copy" />
+      <path value="$PROJECT_DIR$/vendor/monolog/monolog" />
+      <path value="$PROJECT_DIR$/vendor/phar-io/version" />
+      <path value="$PROJECT_DIR$/vendor/phar-io/manifest" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-code-coverage" />
+      <path value="$PROJECT_DIR$/vendor/phpstan/phpstan" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-invoker" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-file-iterator" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-timer" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-text-template" />
+      <path value="$PROJECT_DIR$/vendor/symfony/clock" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/phpunit" />
+      <path value="$PROJECT_DIR$/vendor/symfony/css-selector" />
+      <path value="$PROJECT_DIR$/vendor/symfony/console" />
+      <path value="$PROJECT_DIR$/vendor/symfony/error-handler" />
+      <path value="$PROJECT_DIR$/vendor/symfony/deprecation-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/event-dispatcher-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/event-dispatcher" />
+      <path value="$PROJECT_DIR$/vendor/symfony/http-foundation" />
+      <path value="$PROJECT_DIR$/vendor/symfony/finder" />
+      <path value="$PROJECT_DIR$/vendor/symfony/mailer" />
+      <path value="$PROJECT_DIR$/vendor/symfony/http-kernel" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-ctype" />
+      <path value="$PROJECT_DIR$/vendor/symfony/mime" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-grapheme" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-normalizer" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-idn" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php80" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-mbstring" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php84" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php83" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php85" />
+      <path value="$PROJECT_DIR$/vendor/symfony/process" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-uuid" />
+      <path value="$PROJECT_DIR$/vendor/symfony/service-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/routing" />
+      <path value="$PROJECT_DIR$/vendor/symfony/string" />
+      <path value="$PROJECT_DIR$/vendor/symfony/translation-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/translation" />
+      <path value="$PROJECT_DIR$/vendor/symfony/var-dumper" />
+      <path value="$PROJECT_DIR$/vendor/symfony/uid" />
+      <path value="$PROJECT_DIR$/vendor/theseer/tokenizer" />
+      <path value="$PROJECT_DIR$/vendor/symfony/yaml" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/lexer" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/inflector" />
+      <path value="$PROJECT_DIR$/vendor/hamcrest/hamcrest-php" />
+      <path value="$PROJECT_DIR$/vendor/fakerphp/faker" />
+      <path value="$PROJECT_DIR$/vendor/carbonphp/carbon-doctrine-types" />
+      <path value="$PROJECT_DIR$/vendor/fruitcake/php-cors" />
+      <path value="$PROJECT_DIR$/vendor/ralouphie/getallheaders" />
+      <path value="$PROJECT_DIR$/vendor/phpoption/phpoption" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/comparator" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/cli-parser" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/diff" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/complexity" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/exporter" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/environment" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/global-state" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/git-state" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/object-enumerator" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/lines-of-code" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/recursion-context" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/object-reflector" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/version" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/type" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/promises" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/guzzle" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/uri-template" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/psr7" />
+      <path value="$PROJECT_DIR$/vendor/nunomaduro/termwind" />
+      <path value="$PROJECT_DIR$/vendor/dragonmantank/cron-expression" />
+      <path value="$PROJECT_DIR$/vendor/tijsverkoyen/css-to-inline-styles" />
+      <path value="$PROJECT_DIR$/vendor/graham-campbell/result-type" />
+      <path value="$PROJECT_DIR$/vendor/composer" />
+      <path value="$PROJECT_DIR$/vendor/psr/container" />
+      <path value="$PROJECT_DIR$/vendor/psr/clock" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-client" />
+      <path value="$PROJECT_DIR$/vendor/psr/event-dispatcher" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-factory" />
+      <path value="$PROJECT_DIR$/vendor/psr/simple-cache" />
+      <path value="$PROJECT_DIR$/vendor/psr/log" />
+      <path value="$PROJECT_DIR$/vendor/wpstarter/framework" />
+    </include_path>
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4,
+  "fromUser": false
+}]]></component>
+  <component name="ProjectId" id="2NPdIzeUlc2jQnkS12o5z5h00fh" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "2.x",
+    "last_opened_file_path": "D:/wpstarter/o-testbench-core/lib",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\wpstarter\o-testbench-core\lib" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Main" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+      <TestRunner configuration_file="$PROJECT_DIR$/phpunit.xml" scope="XML" use_alternative_configuration_file="true" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-PS-262.10968.76" />
+        <option value="bundled-php-predefined-a98d8de5180a-9522f28f0b20-com.jetbrains.php.sharedIndexes-PS-262.10968.76" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a71552ea-0ae3-4804-8a72-f9e1d3fc954e" name="Changes" comment="" />
+      <created>1679569576036</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1679569576036</updated>
+      <workItem from="1679569577060" duration="673000" />
+      <workItem from="1679574963713" duration="1628000" />
+      <workItem from="1790935967939" duration="3678000" />
+    </task>
+    <task id="LOCAL-00001" summary="Update package name">
+      <created>1679569607488</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1679569607488</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Update package name" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update package name" />
+  </component>
+</project>

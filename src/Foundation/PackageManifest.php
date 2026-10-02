@@ -4,8 +4,19 @@ namespace Orchestra\Testbench\Foundation;
 
 use WpStarter\Filesystem\Filesystem;
 use WpStarter\Foundation\PackageManifest as IlluminatePackageManifest;
+use WpStarter\Support\Arr;
 use WpStarter\Support\Collection;
+use WpStarter\Support\Facades\ParallelTesting;
+use Orchestra\Testbench\Contracts\TestCase as TestCaseContract;
 
+use function Orchestra\Sidekick\Filesystem\join_paths;
+use function Orchestra\Sidekick\is_testbench_cli;
+use function Orchestra\Testbench\in_parallel_testing;
+use function Orchestra\Testbench\package_path;
+
+/**
+ * @api
+ */
 class PackageManifest extends IlluminatePackageManifest
 {
     /**
@@ -18,22 +29,24 @@ class PackageManifest extends IlluminatePackageManifest
     /**
      * List of required packages.
      *
-     * @var array
+     * @var array<int, string>
      */
-    protected $requiredPackages = [
+    protected array $requiredPackages = [
+        'laravel/dusk',
         'spatie/laravel-ray',
     ];
 
     /**
-     * Create a new package manifest instance.
+     * {@inheritDoc}
      *
-     * @param  \WpStarter\Filesystem\Filesystem  $files
-     * @param  string  $basePath
-     * @param  string  $manifestPath
-     * @param  object|null  $testbench
+     * @param  \Orchestra\Testbench\Contracts\TestCase|object|null  $testbench
      */
     public function __construct(Filesystem $files, $basePath, $manifestPath, $testbench = null)
     {
+        if ($testbench instanceof TestCaseContract && in_parallel_testing()) {
+            $manifestPath = join_paths(\dirname($manifestPath), 'test_'.ParallelTesting::token().'_packages.php');
+        }
+
         parent::__construct($files, $basePath, $manifestPath);
 
         $this->setTestbench($testbench);
@@ -46,8 +59,9 @@ class PackageManifest extends IlluminatePackageManifest
      * @param  object|null  $testbench
      * @return void
      */
-    public static function swap($app, $testbench = null)
+    public static function swap($app, $testbench = null): void
     {
+        /** @var \WpStarter\Foundation\PackageManifest $base */
         $base = $app->make(IlluminatePackageManifest::class);
 
         $app->instance(
@@ -77,16 +91,23 @@ class PackageManifest extends IlluminatePackageManifest
      */
     public function requires(...$packages)
     {
-        $this->requiredPackages = array_merge($this->requiredPackages, $packages);
+        $this->requiredPackages = array_merge($this->requiredPackages, Arr::wrap($packages)); // @phpstan-ignore assign.propertyType
 
         return $this;
     }
 
     /**
-     * Get the current package manifest.
+     * Get the manifest path.
      *
-     * @return array
+     * @return string|null
      */
+    public function getManifestPath()
+    {
+        return $this->manifestPath;
+    }
+
+    /** {@inheritDoc} */
+    #[\Override]
     protected function getManifest()
     {
         $ignore = ! \is_null($this->testbench) && method_exists($this->testbench, 'ignorePackageDiscoveriesFrom')
@@ -95,11 +116,11 @@ class PackageManifest extends IlluminatePackageManifest
 
         $ignoreAll = \in_array('*', $ignore);
 
-        return Collection::make(parent::getManifest())
-            ->reject(function ($configuration, $package) use ($ignore, $ignoreAll) {
-                return ($ignoreAll && ! \in_array($package, $this->requiredPackages))
-                    || \in_array($package, $ignore);
-            })->map(static function ($configuration, $key) {
+        $requires = $this->requiredPackages;
+
+        return (new Collection(parent::getManifest()))
+            ->reject(static fn ($configuration, $package) => ($ignoreAll && ! \in_array($package, $requires)) || \in_array($package, $ignore))
+            ->map(static function ($configuration, $package) {
                 foreach ($configuration['providers'] ?? [] as $provider) {
                     if (! class_exists($provider)) {
                         return null;
@@ -110,11 +131,8 @@ class PackageManifest extends IlluminatePackageManifest
             })->filter()->all();
     }
 
-    /**
-     * Get all of the package names that should be ignored.
-     *
-     * @return array
-     */
+    /** {@inheritDoc} */
+    #[\Override]
     protected function packagesToIgnore()
     {
         return [];
@@ -125,33 +143,38 @@ class PackageManifest extends IlluminatePackageManifest
      *
      * @return array
      */
-    protected function providersFromRoot()
+    protected function providersFromRoot(): array
     {
-        if (! \defined('TESTBENCH_WORKING_PATH') || ! is_file(TESTBENCH_WORKING_PATH.'/composer.json')) {
-            return [];
-        }
+        $package = $this->providersFromTestbench();
 
-        $package = ws_transform(file_get_contents(TESTBENCH_WORKING_PATH.'/composer.json'), function ($json) {
-            return json_decode($json, true);
-        });
-
-        return [
-            $this->format($package['name']) => $package['extra']['wpstarter'] ?? [],
-        ];
+        return \is_array($package) ? [
+            $this->format($package['name']) => $package['extra']['laravel'] ?? [],
+        ] : [];
     }
 
     /**
-     * Write the given manifest array to disk.
+     * Get testbench root composer file.
      *
-     * @param  array  $manifest
-     * @return void
-     *
-     * @throws \Exception
+     * @return array{name: string, extra?: array{laravel?: array}}|null
      */
+    protected function providersFromTestbench(): ?array
+    {
+        if (is_testbench_cli() && is_file($composerFile = package_path('composer.json'))) {
+            /** @var array{name: string, extra?: array{laravel?: array}} $composer */
+            $composer = $this->files->json($composerFile);
+
+            return $composer;
+        }
+
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    #[\Override]
     protected function write(array $manifest)
     {
         parent::write(
-            Collection::make($manifest)->merge($this->providersFromRoot())->filter()->all()
+            (new Collection($manifest))->merge($this->providersFromRoot())->filter()->all()
         );
     }
 }

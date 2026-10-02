@@ -2,25 +2,18 @@
 
 namespace Orchestra\Testbench\Tests;
 
-use Orchestra\Testbench\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class DiscoverPackagesTest extends TestCase
 {
-    /**
-     * Ignore package discovery from.
-     *
-     * @return array
-     */
-    public function ignorePackageDiscoveriesFrom()
-    {
-        return [];
-    }
+    protected $enablesPackageDiscoveries = true;
 
-    /** @test */
+    #[Test]
     public function it_can_auto_detect_packages()
     {
-        $loadedProviders = ws_collect($this->app->getLoadedProviders())->keys()->all();
+        $loadedProviders = collect($this->app->getLoadedProviders())->keys()->all();
 
-        $this->assertTrue(true);
+        $this->assertContains('Carbon\Laravel\ServiceProvider', $loadedProviders);
+        $this->assertNotContains('Workbench\App\Providers\AppServiceProvider', $loadedProviders);
     }
 }

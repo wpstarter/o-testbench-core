@@ -2,24 +2,21 @@
 
 namespace Orchestra\Testbench\Tests\Integrations;
 
-use Orchestra\Testbench\TestCase;
+use Orchestra\Testbench\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class AggregateServiceProviderTest extends TestCase
 {
-    /**
-     * Get package providers.
-     *
-     * @param  \WpStarter\Foundation\Application  $app
-     * @return array
-     */
+    /** {@inheritDoc} */
+    #[\Override]
     protected function getPackageProviders($app)
     {
         return [
-            'Orchestra\Testbench\Tests\Fixtures\Providers\ParentServiceProvider',
+            \Orchestra\Testbench\Tests\Fixtures\Providers\ParentServiceProvider::class,
         ];
     }
 
-    /** @test */
+    #[Test]
     public function it_populate_expected_services()
     {
         $this->assertTrue($this->app->bound('parent.loaded'));

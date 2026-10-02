@@ -1,0 +1,26 @@
+includes:
+  - ./phpstan-baseline.neon
+
+parameters:
+  paths:
+    - src
+    - types
+
+  # The level 8 is the highest level
+  level: 8
+
+  ignoreErrors:
+    - identifier: function.alreadyNarrowedType
+    - identifier: missingType.generics
+    - identifier: missingType.iterableValue
+    - identifier: trait.unused
+    - '#Unsafe usage of new static#'
+
+  excludePaths:
+    - src/Bootstrap/ConfigureRay.php
+    - src/Exceptions/DeprecatedException.php
+    - src/Exceptions/PHPUnitErrorException.php
+    - src/Foundation/Console/TestCommand.php
+    - src/PHPUnit/TestCase.php
+
+  treatPhpDocTypesAsCertain: false

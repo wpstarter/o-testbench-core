@@ -1,2 +1,29 @@
 providers:
-  - Orchestra\Testbench\Foundation\TestbenchServiceProvider
+  - Workbench\App\Providers\WorkbenchServiceProvider
+
+env:
+  APP_NAME: "Testbench"
+
+migrations:
+  - workbench/database/migrations
+
+workbench:
+  health: true
+  discovers:
+    config: true
+    factories: true
+    web: true
+    api: true
+    commands: true
+    views: true
+  sync:
+    - from: storage
+      to: workbench/storage
+      reverse: true
+
+purge:
+  files:
+    - .env
+  directories:
+    - public/build
+    - public/vendor/*

@@ -9,13 +9,13 @@ return [
     | Default Cache Store
     |--------------------------------------------------------------------------
     |
-    | This option controls the default cache connection that gets used while
-    | using this caching library. This connection is used when another is
-    | not explicitly specified when executing a given caching function.
+    | This option controls the default cache store that will be used by the
+    | framework. This connection is utilized if another isn't explicitly
+    | specified when running a cache operation inside the application.
     |
     */
 
-    'default' => ws_env('CACHE_DRIVER', 'array'),
+    'default' => ws_env('CACHE_STORE', 'array'),
 
     /*
     |--------------------------------------------------------------------------
@@ -26,32 +26,36 @@ return [
     | well as their drivers. You may even define multiple stores for the
     | same cache driver to group types of items stored in your caches.
     |
-    | Supported drivers: "apc", "array", "database", "file",
-    |         "memcached", "redis", "dynamodb", "octane", "null"
+    | Supported drivers: "array", "database", "file", "memcached",
+    |                    "redis", "dynamodb", "octane",
+    |                    "failover", "null"
     |
     */
 
     'stores' => [
-
-        'apc' => [
-            'driver' => 'apc',
-        ],
 
         'array' => [
             'driver' => 'array',
             'serialize' => false,
         ],
 
+        'session' => [
+            'driver' => 'session',
+            'key' => ws_env('SESSION_CACHE_KEY', '_cache'),
+        ],
+
         'database' => [
             'driver' => 'database',
-            'table' => 'cache',
-            'connection' => null,
-            'lock_connection' => null,
+            'connection' => ws_env('DB_CACHE_CONNECTION'),
+            'table' => ws_env('DB_CACHE_TABLE', 'cache'),
+            'lock_connection' => ws_env('DB_CACHE_LOCK_CONNECTION'),
+            'lock_table' => ws_env('DB_CACHE_LOCK_TABLE'),
         ],
 
         'file' => [
             'driver' => 'file',
             'path' => ws_storage_path('framework/cache/data'),
+            'lock_path' => ws_storage_path('framework/cache/data'),
         ],
 
         'memcached' => [
@@ -75,8 +79,8 @@ return [
 
         'redis' => [
             'driver' => 'redis',
-            'connection' => 'cache',
-            'lock_connection' => 'default',
+            'connection' => ws_env('REDIS_CACHE_CONNECTION', 'cache'),
+            'lock_connection' => ws_env('REDIS_CACHE_LOCK_CONNECTION', 'default'),
         ],
 
         'dynamodb' => [
@@ -92,6 +96,14 @@ return [
             'driver' => 'octane',
         ],
 
+        'failover' => [
+            'driver' => 'failover',
+            'stores' => [
+                'database',
+                'array',
+            ],
+        ],
+
     ],
 
     /*
@@ -99,12 +111,12 @@ return [
     | Cache Key Prefix
     |--------------------------------------------------------------------------
     |
-    | When utilizing a RAM based store such as APC or Memcached, there might
-    | be other applications utilizing the same cache. So, we'll specify a
-    | value to get prefixed to all our keys so we can avoid collisions.
+    | When utilizing the APC, database, memcached, Redis, and DynamoDB cache
+    | stores, there might be other applications using the same cache. For
+    | that reason, you may prefix every cache key to avoid collisions.
     |
     */
 
-    'prefix' => ws_env('CACHE_PREFIX', Str::slug(ws_env('APP_NAME', 'laravel'), '_').'_cache'),
+    'prefix' => ws_env('CACHE_PREFIX', Str::slug((string) ws_env('APP_NAME', 'laravel'), '_').'_cache_'),
 
 ];

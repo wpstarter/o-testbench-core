@@ -2,46 +2,55 @@
 
 namespace Orchestra\Testbench\Concerns;
 
+use Closure;
 use WpStarter\Support\Collection;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Runner\Version;
-use ReflectionClass;
+use Orchestra\Testbench\Attributes;
 
+/**
+ * @internal
+ *
+ * @deprecated
+ *
+ * @codeCoverageIgnore
+ */
 trait HandlesAnnotations
 {
     /**
      * Parse test method annotations.
      *
+     * @internal
+     *
      * @param  \WpStarter\Foundation\Application  $app
      * @param  string  $name
      */
-    protected function parseTestMethodAnnotations($app, string $name): void
+    protected function parseTestMethodAnnotations($app, string $name, ?Closure $callback = null): void
     {
-        $instance = new ReflectionClass($this);
+        /** @phpstan-ignore match.unhandled */
+        $attribute = match ($name) {
+            'environment-setup' => Attributes\DefineEnvironment::class,
+            'define-env' => Attributes\DefineEnvironment::class,
+            'define-db' => Attributes\DefineDatabase::class,
+            'define-route' => Attributes\DefineRoute::class,
+        };
 
-        if (! $this instanceof TestCase || $instance->isAnonymous()) {
-            return;
-        }
+        $this->resolvePhpUnitAnnotations()
+            ->lazy()
+            ->filter(static fn ($actions, string $key) => $key === $name && ! empty($actions))
+            ->flatten()
+            ->filter(fn ($method) => \is_string($method) && method_exists($this, $method))
+            ->each($callback ?? function ($method) use ($app, $name, $attribute) {
+                trigger_deprecation('orchestra/testbench-core', '9.12.0', 'Use #[%s] attribute instead of deprecated @%s annotation', $attribute, $name);
 
-        if (class_exists(Version::class) && version_compare(Version::id(), '10', '>=')) {
-            $registry = \PHPUnit\Metadata\Annotation\Parser\Registry::getInstance();
-        } else {
-            $registry = \PHPUnit\Util\Annotation\Registry::getInstance();
-        }
-
-        Collection::make(
-            ws_rescue(function () use ($registry) {
-                return $registry->forMethod(static::class, $this->getName(false))->symbolAnnotations();
-            }, [], false)
-        )->filter(static function ($actions, $key) use ($name) {
-            return $key === $name;
-        })->each(function ($actions) use ($app) {
-            Collection::make($actions ?? [])
-                ->filter(function ($method) {
-                    return ! \is_null($method) && method_exists($this, $method);
-                })->each(function ($method) use ($app) {
-                    $this->{$method}($app);
-                });
-        });
+                $this->{$method}($app);
+            });
     }
+
+    /**
+     * Resolve PHPUnit method annotations.
+     *
+     * @phpunit-overrides
+     *
+     * @return \WpStarter\Support\Collection<string, mixed>
+     */
+    abstract protected function resolvePhpUnitAnnotations(): Collection;
 }

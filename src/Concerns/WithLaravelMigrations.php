@@ -2,82 +2,42 @@
 
 namespace Orchestra\Testbench\Concerns;
 
-use Orchestra\Testbench\Database\MigrateProcessor;
+use WpStarter\Foundation\Testing\RefreshDatabaseState;
+
+use function Orchestra\Testbench\after_resolving;
+use function Orchestra\Testbench\default_migration_path;
 
 trait WithLaravelMigrations
 {
+    use InteractsWithWorkbench;
+
     /**
-     * Migrate Laravel's default migrations.
+     * Bootstrap with laravel migrations.
      *
-     * @param  string|array<string, mixed>  $database
+     * @internal
+     *
      * @return void
      */
-    protected function loadLaravelMigrations($database = []): void
+    protected function setUpWithLaravelMigrations(): void
     {
-        $this->loadLaravelMigrationsWithoutRollback($database);
+        /** @var bool $loadLaravelMigrations */
+        $loadLaravelMigrations = static::cachedConfigurationForWorkbench()->getWorkbenchAttributes()['install'] ?? false;
 
-        $this->beforeApplicationDestroyed(function () use ($database) {
-            $options = $this->resolveLaravelMigrationsOptions($database);
-            $options['--path'] = 'migrations';
+        if (! ($loadLaravelMigrations && is_dir(default_migration_path()))) {
+            return;
+        }
 
-            (new MigrateProcessor($this, $options))->rollback();
-        });
-    }
-
-    /**
-     * Migrate Laravel's default migrations without rollback.
-     *
-     * @param  string|array<string, mixed>  $database
-     * @return void
-     */
-    protected function loadLaravelMigrationsWithoutRollback($database = []): void
-    {
-        $options = $this->resolveLaravelMigrationsOptions($database);
-        $options['--path'] = 'migrations';
-
-        (new MigrateProcessor($this, $options))->up();
-
-        $this->resetApplicationArtisanCommands($this->app);
-    }
-
-    /**
-     * Migrate all Laravel's migrations.
-     *
-     * @param  string|array<string, mixed>  $database
-     * @return void
-     */
-    protected function runLaravelMigrations($database = []): void
-    {
-        $this->runLaravelMigrationsWithoutRollback($database);
-
-        $this->beforeApplicationDestroyed(function () use ($database) {
-            (new MigrateProcessor($this, $this->resolveLaravelMigrationsOptions($database)))->rollback();
-        });
-    }
-
-    /**
-     * Migrate all Laravel's migrations without rollback.
-     *
-     * @param  string|array<string, mixed>  $database
-     * @return void
-     */
-    protected function runLaravelMigrationsWithoutRollback($database = []): void
-    {
-        (new MigrateProcessor($this, $this->resolveLaravelMigrationsOptions($database)))->up();
-
-        $this->resetApplicationArtisanCommands($this->app);
-    }
-
-    /**
-     * Resolve Laravel Migrations Artisan command options.
-     *
-     * @param  string|array<string, mixed>  $database
-     * @return array
-     */
-    protected function resolveLaravelMigrationsOptions($database = []): array
-    {
-        $options = \is_array($database) ? $database : ['--database' => $database];
-
-        return $options;
+        if (
+            static::usesRefreshDatabaseTestingConcern()
+            && RefreshDatabaseState::$migrated === false
+            && RefreshDatabaseState::$lazilyRefreshed === false
+        ) {
+            after_resolving($this->app, 'migrator', static function ($migrator, $app) {
+                /** @var \WpStarter\Database\Migrations\Migrator $migrator */
+                $migrator->path(default_migration_path());
+            });
+        } else {
+            $this->loadLaravelMigrations();
+        }
     }
 }

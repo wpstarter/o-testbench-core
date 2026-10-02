@@ -2,37 +2,77 @@
 
 namespace Orchestra\Testbench\Concerns;
 
-use WpStarter\Contracts\Console\Kernel;
+use Attribute;
+use Closure;
 use WpStarter\Filesystem\Filesystem;
-use Orchestra\Testbench\Foundation\Application;
+use WpStarter\Foundation\Application as LaravelApplication;
+use Laravel\SerializableClosure\SerializableClosure;
+use Orchestra\Testbench\Attributes\DefineRoute;
+use Orchestra\Testbench\Attributes\UsesVendor;
+use Orchestra\Testbench\Features\TestingFeature;
+use Orchestra\Testbench\Foundation\Bootstrap\SyncTestbenchCachedRoutes;
+
+use function Orchestra\Sidekick\Filesystem\join_paths;
+use function Orchestra\Testbench\in_parallel_testing;
+use function Orchestra\Testbench\refresh_router_lookups;
+use function Orchestra\Testbench\remote;
 
 trait HandlesRoutes
 {
+    use HandlesAssertions;
+    use InteractsWithPHPUnit;
+    use InteractsWithTestCase;
+
+    /**
+     * Indicates if we have made it through the requireApplicationCachedRoutes function.
+     *
+     * @var bool
+     */
+    protected bool $requireApplicationCachedRoutesHasRun = false;
+
     /**
      * Setup routes requirements.
+     *
+     * @internal
+     *
+     * @param  \WpStarter\Foundation\Application  $app
      */
-    protected function setUpApplicationRoutes(): void
+    protected function setUpApplicationRoutes($app): void
     {
-        if ($this->app->routesAreCached()) {
+        if ($app->routesAreCached()) {
             return;
         }
 
-        $this->defineRoutes($this->app['router']);
+        /** @var \WpStarter\Routing\Router $router */
+        $router = $app['router'];
 
-        $this->app['router']->middleware('web')
-            ->group(function ($router) {
-                $this->defineWebRoutes($router);
-            });
+        TestingFeature::run(
+            testCase: $this,
+            default: function () use ($router) {
+                $this->defineRoutes($router);
 
-        if (method_exists($this, 'parseTestMethodAnnotations')) {
-            $this->parseTestMethodAnnotations($this->app, 'define-route');
-        }
+                $router->middleware('web')
+                    ->group(fn ($router) => $this->defineWebRoutes($router));
+            },
+            annotation: fn () => $this->parseTestMethodAnnotations($app, 'define-route', function ($method) use ($router) {
+                $this->{$method}($router);
+            }),
+            attribute: fn () => $this->parseTestMethodAttributes($app, DefineRoute::class),
+            pest: function () use ($router) {
+                $this->defineRoutesUsingPest($router); // @phpstan-ignore method.notFound
 
-        $this->app['router']->getRoutes()->refreshNameLookups();
+                $router->middleware('web')
+                    ->group(fn ($router) => $this->defineWebRoutesUsingPest($router)); /** @phpstan-ignore method.notFound */
+            }
+        );
+
+        refresh_router_lookups($router);
     }
 
     /**
      * Define routes setup.
+     *
+     * @api
      *
      * @param  \WpStarter\Routing\Router  $router
      * @return void
@@ -45,6 +85,8 @@ trait HandlesRoutes
     /**
      * Define web routes setup.
      *
+     * @api
+     *
      * @param  \WpStarter\Routing\Router  $router
      * @return void
      */
@@ -54,52 +96,112 @@ trait HandlesRoutes
     }
 
     /**
-     * Define cache routes setup.
+     * Define stash routes setup.
      *
-     * @param  string  $route
+     * @api
+     *
+     * @param  \Closure|string  $route
      * @return void
      */
-    protected function defineCacheRoutes(string $route)
+    protected function defineStashRoutes(Closure|string $route): void
     {
-        $files = new Filesystem();
+        $this->defineCacheRoutes($route, false);
+    }
+
+    /**
+     * Define cache routes setup.
+     *
+     * @api
+     *
+     * @param  \Closure|string  $route
+     * @param  bool  $cached
+     * @return void
+     */
+    protected function defineCacheRoutes(Closure|string $route, bool $cached = true): void
+    {
+        $this->markTestSkippedWhen(in_parallel_testing(), 'Unable to support parallel testing with `defineCacheRoutes()`.');
+
+        static::usesTestingFeature($attribute = new UsesVendor, Attribute::TARGET_METHOD);
+
+        if (
+            $this->app instanceof LaravelApplication
+            && property_exists($this, 'setUpHasRun')
+            && $this->setUpHasRun === true
+        ) {
+            $attribute->beforeEach($this->app);
+        }
+
+        $files = new Filesystem;
 
         $time = time();
 
-        $laravel = Application::create($this->getBasePath());
+        $basePath = static::applicationBasePath();
+        $bootstrapPath = $files->isDirectory(join_paths($basePath, '.laravel'))
+            ? join_paths($basePath, '.laravel')
+            : join_paths($basePath, 'bootstrap');
+
+        if ($route instanceof Closure) {
+            $cached = false;
+            /** @var string $serializeRoute */
+            $serializeRoute = serialize(SerializableClosure::unsigned($route));
+            $stub = $files->get(join_paths(__DIR__, 'stubs', 'routes.stub'));
+            $route = str_replace('{{routes}}', var_export($serializeRoute, true), $stub);
+        }
 
         $files->put(
-            $laravel->basePath("routes/testbench-{$time}.php"), $route
+            join_paths($basePath, 'routes', "testbench-{$time}.php"), $route
         );
 
-        $laravel->make(Kernel::class)->call('route:cache');
+        if ($cached === true) {
+            remote('route:cache')->mustRun();
 
-        $this->assertTrue(
-            $files->exists(ws_base_path('bootstrap/cache/routes-v7.php'))
-        );
+            \assert($files->exists(join_paths($bootstrapPath, 'cache', 'routes-v7.php')) === true);
+        }
 
-        if (isset($this->app)) {
+        if ($this->app instanceof LaravelApplication) {
             $this->reloadApplication();
         }
 
-        $this->requireApplicationCachedRoutes($files);
+        $this->requireApplicationCachedRoutes($files, $cached);
     }
 
     /**
      * Require application cached routes.
+     *
+     * @internal
+     *
+     * @param  \WpStarter\Filesystem\Filesystem  $files
+     * @return void
      */
-    protected function requireApplicationCachedRoutes(Filesystem $files): void
+    protected function requireApplicationCachedRoutes(Filesystem $files, bool $cached): void
     {
-        $this->afterApplicationCreated(function () {
-            require $this->app->getCachedRoutesPath();
+        if ($this->requireApplicationCachedRoutesHasRun === true) {
+            return;
+        }
+
+        $this->afterApplicationCreated(function () use ($cached) {
+            $app = $this->app;
+
+            if ($app instanceof LaravelApplication) {
+                if ($cached === true) {
+                    require $app->getCachedRoutesPath();
+                } else {
+                    (new SyncTestbenchCachedRoutes)->bootstrap($app);
+                }
+            }
         });
 
         $this->beforeApplicationDestroyed(function () use ($files) {
-            $files->delete(
-                ws_base_path('bootstrap/cache/routes-v7.php'),
-                ...$files->glob(ws_base_path('routes/testbench-*.php'))
-            );
+            if ($this->app instanceof LaravelApplication) {
+                $files->delete(
+                    $this->app->bootstrapPath(join_paths('cache', 'routes-v7.php')),
+                    ...$files->glob($this->app->basePath(join_paths('routes', 'testbench-*.php')))
+                );
+            }
 
             sleep(1);
         });
+
+        $this->requireApplicationCachedRoutesHasRun = true;
     }
 }
