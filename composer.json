@@ -75,7 +75,7 @@
             ]
         },
         "preferred-install": {
-            "laravel/framework": "source",
+            "wpstarter/framework": "source",
             "*": "auto"
         },
         "sort-packages": true

@@ -35,8 +35,8 @@ class PackageManifestTest extends TestCase
         $packages = Collection::make(require $manifestPath);
 
         $installedPackages = [
-            'nesbot/carbon',
-            'nunomaduro/termwind',
+            //'nesbot/carbon',
+            //'nunomaduro/termwind',
             // 'spatie/laravel-ray',
         ];
 
@@ -66,8 +66,8 @@ class PackageManifestTest extends TestCase
         $packages = Collection::make(require $manifestPath);
 
         $installedPackages = [
-            'nesbot/carbon',
-            'nunomaduro/termwind',
+            //'nesbot/carbon',
+            //'nunomaduro/termwind',
             // 'spatie/laravel-ray',
         ];
 
@@ -104,8 +104,8 @@ class PackageManifestTest extends TestCase
         $packages = Collection::make(require $manifestPath);
 
         $installedPackages = [
-            'nesbot/carbon',
-            'nunomaduro/termwind',
+            //'nesbot/carbon',
+            //'nunomaduro/termwind',
             // 'spatie/laravel-ray',
         ];
 

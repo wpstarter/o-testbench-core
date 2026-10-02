@@ -146,7 +146,7 @@ class Workbench
 
                         return ws_response(
                             View::file(
-                                package_path('vendor', 'laravel', 'framework', 'src', 'WpStarter', 'Foundation', 'resources', 'health-up.blade.php'),
+                                package_path('vendor', 'wpstarter', 'framework', 'src', 'WpStarter', 'Foundation', 'resources', 'health-up.blade.php'),
                                 ['exception' => $exception],
                             ),
                             status: $exception ? 500 : 200,

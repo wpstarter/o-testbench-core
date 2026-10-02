@@ -21,7 +21,7 @@ final class UsesFrameworkConfiguration implements InvokableContract
     {
         $app->bind(LoadConfiguration::class, LoadConfiguration::class);
 
-        $app->useConfigPath(package_path(['vendor', 'laravel', 'framework', 'config']));
+        $app->useConfigPath(package_path(['vendor', 'wpstarter', 'framework', 'config']));
 
         $app->dontMergeFrameworkConfiguration();
     }
