@@ -17,7 +17,7 @@ Process::fromShellCommandline(
     'composer create-project "laravel/laravel:'.$version.'" skeleton --no-scripts --no-plugins --quiet --no-install', $workingPath
 )->mustRun();
 
-collect([
+ws_collect([
     'artisan',
     '.env.example',
     'database/.gitignore',
@@ -37,7 +37,7 @@ $files->move("{$workingPath}/laravel/database/migrations/0001_01_01_000000_creat
 $files->move("{$workingPath}/laravel/database/migrations/0001_01_01_000001_create_cache_table.php", "{$workingPath}/laravel/migrations/0001_01_01_000001_testbench_create_cache_table.php");
 $files->move("{$workingPath}/laravel/database/migrations/0001_01_01_000002_create_jobs_table.php", "{$workingPath}/laravel/migrations/0001_01_01_000002_testbench_create_jobs_table.php");
 
-collect([
+ws_collect([
     // 'cache/0001_01_02_000000_testbench_create_cache_table' => 'Cache/Console/stubs/cache.stub',
     'notifications/0001_01_02_000000_testbench_create_notifications_table' => 'Notifications/Console/stubs/notifications.stub',
     // 'queue/0001_01_02_000000_testbench_create_jobs_table' => 'Queue/Console/stubs/jobs.stub',
@@ -83,7 +83,7 @@ transform([
     line('PHP_CLI_SERVER_WORKERS=', 0) => line('# PHP_CLI_SERVER_WORKERS=', 0),
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/laravel/.env.example"));
 
-collect([
+ws_collect([
     'config/*.php',
 ])->transform(fn ($file) => "{$workingPath}/vendor/laravel/framework/{$file}")
     ->map(fn ($file) => str_contains($file, '*') ? [...$files->glob($file)] : $file)

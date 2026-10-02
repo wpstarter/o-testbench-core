@@ -73,7 +73,7 @@ trait ConfiguresPrompts
             }
 
             return $this->promptUntilValid(
-                fn () => collect((new SymfonyStyle($input, $output))->choice(
+                fn () => ws_collect((new SymfonyStyle($input, $output))->choice(
                     $prompt->label,
                     array_is_list($prompt->options)
                         ? ['None', ...$prompt->options]

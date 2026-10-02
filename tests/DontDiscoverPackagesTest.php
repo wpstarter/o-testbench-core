@@ -16,7 +16,7 @@ class DontDiscoverPackagesTest extends TestCase
     #[Test]
     public function it_cant_auto_detect_packages()
     {
-        $loadedProviders = collect($this->app->getLoadedProviders())->keys()->all();
+        $loadedProviders = ws_collect($this->app->getLoadedProviders())->keys()->all();
 
         $this->assertNotContains('Spatie\LaravelRay\RayServiceProvider', $loadedProviders);
         $this->assertNotContains('Carbon\Laravel\ServiceProvider', $loadedProviders);
