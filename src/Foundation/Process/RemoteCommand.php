@@ -5,7 +5,7 @@ namespace Orchestra\Testbench\Foundation\Process;
 use Closure;
 use WpStarter\Support\Arr;
 use WpStarter\Support\ProcessUtils;
-use Laravel\SerializableClosure\SerializableClosure;
+use WpStarter\SerializableClosure\SerializableClosure;
 use Symfony\Component\Process\Process;
 
 use function Orchestra\Testbench\defined_environment_variables;

@@ -6,7 +6,7 @@ use Attribute;
 use Closure;
 use WpStarter\Filesystem\Filesystem;
 use WpStarter\Foundation\Application as LaravelApplication;
-use Laravel\SerializableClosure\SerializableClosure;
+use WpStarter\SerializableClosure\SerializableClosure;
 use Orchestra\Testbench\Attributes\DefineRoute;
 use Orchestra\Testbench\Attributes\UsesVendor;
 use Orchestra\Testbench\Features\TestingFeature;

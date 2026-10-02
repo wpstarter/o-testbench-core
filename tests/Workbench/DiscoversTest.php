@@ -112,7 +112,7 @@ class DiscoversTest extends TestCase
     #[Test]
     public function it_can_discover_translation_files()
     {
-        $this->assertSame('Good Morning', __('workbench::welcome.morning'));
+        $this->assertSame('Good Morning', ws___('workbench::welcome.morning'));
     }
 
     #[Test]
