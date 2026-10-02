@@ -38,7 +38,7 @@ final class HandleExceptions extends \WpStarter\Foundation\Bootstrap\HandleExcep
     #[\Override]
     protected function ensureDeprecationLoggerIsConfigured()
     {
-        with(self::$app->make('config'), static function ($config) {
+        ws_with(self::$app->make('config'), static function ($config) {
             /** @var \WpStarter\Contracts\Config\Repository $config */
             if ($config->get('logging.channels.deprecations')) {
                 return;
