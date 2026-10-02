@@ -6,7 +6,7 @@ use WpStarter\Console\View\Components\Factory as ComponentsFactory;
 use WpStarter\Filesystem\Filesystem;
 use Orchestra\Sidekick\Console\Task;
 
-use function Laravel\Prompts\confirm;
+use function WpStarter\Prompts\confirm;
 use function Orchestra\Sidekick\Filesystem\join_paths;
 use function Orchestra\Testbench\transform_realpath_to_relative;
 

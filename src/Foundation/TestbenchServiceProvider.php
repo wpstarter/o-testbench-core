@@ -22,10 +22,10 @@ class TestbenchServiceProvider extends ServiceProvider
     public function register(): void
     {
         AboutCommand::add('Testbench', fn () => array_filter([
-            'Core Version' => InstalledVersions::getPrettyVersion('orchestra/testbench-core'),
-            'Dusk Version' => InstalledVersions::isInstalled('orchestra/testbench-dusk') ? InstalledVersions::getPrettyVersion('orchestra/testbench-dusk') : null,
+            'Core Version' => InstalledVersions::getPrettyVersion('wpstarter/o-testbench-core'),
+            'Dusk Version' => InstalledVersions::isInstalled('wpstarter/o-testbench-dusk') ? InstalledVersions::getPrettyVersion('wpstarter/o-testbench-dusk') : null,
             'Skeleton Path' => AboutCommand::format($this->app->basePath(), console: fn ($value) => str_replace(package_path(), '', $value)),
-            'Version' => InstalledVersions::isInstalled('orchestra/testbench') ? InstalledVersions::getPrettyVersion('orchestra/testbench') : null,
+            'Version' => InstalledVersions::isInstalled('wpstarter/o-testbench') ? InstalledVersions::getPrettyVersion('wpstarter/o-testbench') : null,
         ]));
     }
 

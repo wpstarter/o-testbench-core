@@ -7,7 +7,7 @@ use WpStarter\Filesystem\Filesystem;
 use WpStarter\Support\LazyCollection;
 use Orchestra\Sidekick\Console\Task;
 
-use function Laravel\Prompts\confirm;
+use function WpStarter\Prompts\confirm;
 use function Orchestra\Testbench\transform_realpath_to_relative;
 
 /**

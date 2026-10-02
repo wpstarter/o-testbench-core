@@ -2,13 +2,13 @@
 
 namespace Orchestra\Sidekick\Console\Concerns;
 
-use Laravel\Prompts\ConfirmPrompt;
-use Laravel\Prompts\MultiSelectPrompt;
-use Laravel\Prompts\PasswordPrompt;
-use Laravel\Prompts\Prompt;
-use Laravel\Prompts\SelectPrompt;
-use Laravel\Prompts\SuggestPrompt;
-use Laravel\Prompts\TextPrompt;
+use WpStarter\Prompts\ConfirmPrompt;
+use WpStarter\Prompts\MultiSelectPrompt;
+use WpStarter\Prompts\PasswordPrompt;
+use WpStarter\Prompts\Prompt;
+use WpStarter\Prompts\SelectPrompt;
+use WpStarter\Prompts\SuggestPrompt;
+use WpStarter\Prompts\TextPrompt;
 use Orchestra\Sidekick\Env;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
