@@ -24,8 +24,8 @@ class UsesFrameworkConfigurationTest extends TestCase
 
         $environment = Env::has('TESTBENCH_PACKAGE_TESTER') ? 'testing' : 'workbench';
 
-        $this->assertSame($environment, config('app.env'));
-        $this->assertSame('WpStarter\Foundation\Auth\User', config('auth.providers.users.model'));
+        $this->assertSame($environment, ws_config('app.env'));
+        $this->assertSame('WpStarter\Foundation\Auth\User', ws_config('auth.providers.users.model'));
     }
 
     #[Test]
@@ -36,7 +36,7 @@ class UsesFrameworkConfigurationTest extends TestCase
 
         $environment = Env::has('TESTBENCH_PACKAGE_TESTER') ? 'testing' : 'production';
 
-        $this->assertSame($environment, config('app.env'));
-        $this->assertSame('App\Models\User', config('auth.providers.users.model'));
+        $this->assertSame($environment, ws_config('app.env'));
+        $this->assertSame('App\Models\User', ws_config('auth.providers.users.model'));
     }
 }

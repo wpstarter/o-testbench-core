@@ -54,6 +54,6 @@ class UserFactory extends Factory
      */
     public function modelName()
     {
-        return $this->model ?? config('auth.providers.users.model') ?? ws_env('AUTH_MODEL', User::class);
+        return $this->model ?? ws_config('auth.providers.users.model') ?? ws_env('AUTH_MODEL', User::class);
     }
 }

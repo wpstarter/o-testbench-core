@@ -62,7 +62,7 @@ class WithWorkbenchTest extends TestCase
     public function it_can_resolve_user_model_from_workbench()
     {
         $this->assertFalse(Env::has('AUTH_MODEL'));
-        $this->assertSame('Workbench\App\Models\User', config('auth.providers.users.model'));
+        $this->assertSame('Workbench\App\Models\User', ws_config('auth.providers.users.model'));
     }
 
     #[Test]

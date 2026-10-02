@@ -24,9 +24,9 @@ class AnnotationEnvironmentSetupTest extends TestCase
     #[Test]
     public function it_loads_first_config_helper()
     {
-        $this->assertSame('testbench', config('database.default'));
-        $this->assertSame('testbench', config('testbench.one'));
-        $this->assertNull(config('testbench.two'));
+        $this->assertSame('testbench', ws_config('database.default'));
+        $this->assertSame('testbench', ws_config('testbench.one'));
+        $this->assertNull(ws_config('testbench.two'));
     }
 
     /**
@@ -35,9 +35,9 @@ class AnnotationEnvironmentSetupTest extends TestCase
     #[Test]
     public function it_loads_second_config_helper()
     {
-        $this->assertSame('testbench', config('database.default'));
-        $this->assertNull(config('testbench.one'));
-        $this->assertSame('testbench', config('testbench.two'));
+        $this->assertSame('testbench', ws_config('database.default'));
+        $this->assertNull(ws_config('testbench.one'));
+        $this->assertSame('testbench', ws_config('testbench.two'));
     }
 
     /**
@@ -47,9 +47,9 @@ class AnnotationEnvironmentSetupTest extends TestCase
     #[Test]
     public function it_loads_both_config_helper()
     {
-        $this->assertSame('testbench', config('database.default'));
-        $this->assertSame('testbench', config('testbench.one'));
-        $this->assertSame('testbench', config('testbench.two'));
+        $this->assertSame('testbench', ws_config('database.default'));
+        $this->assertSame('testbench', ws_config('testbench.one'));
+        $this->assertSame('testbench', ws_config('testbench.two'));
     }
 
     /**

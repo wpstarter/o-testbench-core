@@ -46,7 +46,7 @@ final class RemoteCommand
                 return base64_encode($invokableClosure);
             });
 
-            $env['APP_KEY'] = $env['APP_KEY'] ?? config('app.key') ?? false;
+            $env['APP_KEY'] = $env['APP_KEY'] ?? ws_config('app.key') ?? false;
             $commands = ['invoke-serialized-closure'];
         } else {
             $commands = Arr::wrap($command);

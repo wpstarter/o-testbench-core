@@ -64,7 +64,7 @@ class Task
      */
     public function dispatch(bool $pretending = false): void
     {
-        if (value($this->requirement) === false) {
+        if (ws_value($this->requirement) === false) {
             return;
         }
 

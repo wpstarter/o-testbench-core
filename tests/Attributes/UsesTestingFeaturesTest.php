@@ -30,13 +30,13 @@ class UsesTestingFeaturesTest extends UsesTestingFeaturesTestBaseTestCase
     #[Test]
     public function it_can_see_parent_attributes()
     {
-        $this->assertSame(true, config('fake.parent_attribute'));
+        $this->assertSame(true, ws_config('fake.parent_attribute'));
     }
 
     #[Test]
     public function it_can_override_parent_attributes()
     {
-        $this->assertSame('child', config('fake.override_attribute'));
-        $this->assertSame('child', config('fake.override_attribute_2'));
+        $this->assertSame('child', ws_config('fake.override_attribute'));
+        $this->assertSame('child', ws_config('fake.override_attribute_2'));
     }
 }

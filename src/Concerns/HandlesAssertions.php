@@ -31,7 +31,7 @@ trait HandlesAssertions
      */
     protected function markTestSkippedWhen($condition, string $message): void
     {
-        if (value($condition)) { /** @phpstan-ignore argument.type,argument.type */
+        if (ws_value($condition)) { /** @phpstan-ignore argument.type,argument.type */
             $this->markTestSkipped($message);
         }
     }

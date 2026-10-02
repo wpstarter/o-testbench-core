@@ -21,27 +21,27 @@ class AttributeEnvironmentSetupTest extends TestCase
     #[Test]
     public function it_loads_class_config_helper()
     {
-        $this->assertSame('testbench', config('testbench.class'));
+        $this->assertSame('testbench', ws_config('testbench.class'));
     }
 
     #[Test]
     #[Define('env', 'firstConfig')]
     public function it_loads_first_config_helper()
     {
-        $this->assertSame('testbench', config('database.default'));
-        $this->assertSame('testbench', config('testbench.global'));
-        $this->assertSame('testbench', config('testbench.one'));
-        $this->assertNull(config('testbench.two'));
+        $this->assertSame('testbench', ws_config('database.default'));
+        $this->assertSame('testbench', ws_config('testbench.global'));
+        $this->assertSame('testbench', ws_config('testbench.one'));
+        $this->assertNull(ws_config('testbench.two'));
     }
 
     #[Test]
     #[DefineEnvironment('secondConfig')]
     public function it_loads_second_config_helper()
     {
-        $this->assertSame('testbench', config('database.default'));
-        $this->assertSame('testbench', config('testbench.global'));
-        $this->assertNull(config('testbench.one'));
-        $this->assertSame('testbench', config('testbench.two'));
+        $this->assertSame('testbench', ws_config('database.default'));
+        $this->assertSame('testbench', ws_config('testbench.global'));
+        $this->assertNull(ws_config('testbench.one'));
+        $this->assertSame('testbench', ws_config('testbench.two'));
     }
 
     #[Test]
@@ -49,20 +49,20 @@ class AttributeEnvironmentSetupTest extends TestCase
     #[DefineEnvironment('secondConfig')]
     public function it_loads_both_config_helper()
     {
-        $this->assertSame('testbench', config('database.default'));
-        $this->assertSame('testbench', config('testbench.global'));
-        $this->assertSame('testbench', config('testbench.one'));
-        $this->assertSame('testbench', config('testbench.two'));
+        $this->assertSame('testbench', ws_config('database.default'));
+        $this->assertSame('testbench', ws_config('testbench.global'));
+        $this->assertSame('testbench', ws_config('testbench.one'));
+        $this->assertSame('testbench', ws_config('testbench.two'));
     }
 
     #[Test]
     #[Define('foo', 'firstConfig')]
     public function it_doesnt_load_invalid_environment_config()
     {
-        $this->assertSame('testbench', config('database.default'));
-        $this->assertSame('testbench', config('testbench.global'));
-        $this->assertNull(config('testbench.one'));
-        $this->assertNull(config('testbench.two'));
+        $this->assertSame('testbench', ws_config('database.default'));
+        $this->assertSame('testbench', ws_config('testbench.global'));
+        $this->assertNull(ws_config('testbench.one'));
+        $this->assertNull(ws_config('testbench.two'));
     }
 
     /**

@@ -16,7 +16,7 @@ class UserFactoryTest extends TestCase
     #[Test]
     public function it_has_the_default_configuration()
     {
-        $this->assertSame(User::class, config('auth.providers.users.model'));
+        $this->assertSame(User::class, ws_config('auth.providers.users.model'));
         $this->assertNull(ws_env('AUTH_MODEL'));
     }
 

@@ -28,30 +28,30 @@ class WithConfigTest extends TestCase
     #[WithConfig('testbench.attribute', true)]
     public function it_can_resolve_defined_configuration()
     {
-        $this->assertSame(true, config('testbench.attribute'));
+        $this->assertSame(true, ws_config('testbench.attribute'));
     }
 
     #[Test]
     #[WithConfig('testbench.session.attribute', true)]
     public function it_can_deferred_resolve_defined_configuration()
     {
-        $this->assertSame(true, config('testbench.session.attribute'));
-        $this->assertSame(false, config('testbench.session.report'));
-        $this->assertSame(1, config('testbench.api'));
+        $this->assertSame(true, ws_config('testbench.session.attribute'));
+        $this->assertSame(false, ws_config('testbench.session.report'));
+        $this->assertSame(1, ws_config('testbench.api'));
     }
 
     #[Test]
     #[WithConfig('testbench.session.attribute', true, defer: false)]
     public function it_can_eagerly_resolve_defined_configuration()
     {
-        $this->assertSame(true, config('testbench.session.attribute'));
-        $this->assertNull(config('testbench.session.report'));
-        $this->assertSame(1, config('testbench.api'));
+        $this->assertSame(true, ws_config('testbench.session.attribute'));
+        $this->assertNull(ws_config('testbench.session.report'));
+        $this->assertSame(1, ws_config('testbench.api'));
     }
 
     #[Test]
     public function it_does_not_persist_defined_configuration_between_tests()
     {
-        $this->assertNull(config('testbench.attribute'));
+        $this->assertNull(ws_config('testbench.attribute'));
     }
 }

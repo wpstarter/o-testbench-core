@@ -103,7 +103,7 @@ transform([
      */
     public function modelName()
     {
-        return $this->model ?? config(\'auth.providers.users.model\') ?? ws_env(\'AUTH_MODEL\', User::class);
+        return $this->model ?? ws_config(\'auth.providers.users.model\') ?? ws_env(\'AUTH_MODEL\', User::class);
     }
 }'.PHP_EOL, 1),
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/src/Factories/UserFactory.php"));

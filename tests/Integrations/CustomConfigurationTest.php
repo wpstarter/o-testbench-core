@@ -19,6 +19,6 @@ class CustomConfigurationTest extends TestCase
     #[Test]
     public function it_can_override_existing_configuration_on_register()
     {
-        $this->assertSame('bar', config('database.redis.foo'));
+        $this->assertSame('bar', ws_config('database.redis.foo'));
     }
 }

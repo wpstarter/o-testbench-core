@@ -13,7 +13,7 @@ class CustomConfigServiceProvider extends ServiceProvider
         ];
 
         foreach ($config as $name => $params) {
-            config(['database.redis.'.$name => $params]);
+            ws_config(['database.redis.'.$name => $params]);
         }
     }
 }
