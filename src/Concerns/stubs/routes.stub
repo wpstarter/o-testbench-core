@@ -2,7 +2,7 @@
 
 use WpStarter\Support\Facades\Route;
 
-transform(unserialize({{routes}})->getClosure(), function ($serializedClosure) use ($router) {
+ws_transform(unserialize({{routes}})->getClosure(), function ($serializedClosure) use ($router) {
     if ($serializedClosure instanceof Closure) {
         ws_value($serializedClosure, $router);
     }

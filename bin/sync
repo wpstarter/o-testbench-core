@@ -46,11 +46,11 @@ $files->put("{$workingPath}/laravel/bootstrap/.testbench-default-skeleton", '@te
 
 require Orchestra\Sidekick\join_paths(__DIR__, 'configure-skeleton.php');
 
-transform([
+ws_transform([
     line('App\Providers', 2) => line('// App\Providers', 2),
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/laravel/config/app.php"));
 
-transform([
+ws_transform([
     line("'default' => ws_env('CACHE_STORE', 'database'),", 1) => line("'default' => ws_env('CACHE_STORE', 'array'),", 1),
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/laravel/config/cache.php"));
 
@@ -58,11 +58,11 @@ transform([
 //     line("'serve' => true,", 3) => line("'serve' => false,", 3),
 // ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/laravel/config/filesystems.php"));
 
-transform([
+ws_transform([
     line("'default' => ws_env('QUEUE_CONNECTION', 'database'),", 1) => line("'default' => ws_env('QUEUE_CONNECTION', 'sync'),", 1),
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/laravel/config/queue.php"));
 
-transform([
+ws_transform([
     line("'driver' => ws_env('SESSION_DRIVER', 'database'),", 1) => line("'driver' => ws_env('SESSION_DRIVER', 'array'),", 1),
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/laravel/config/session.php"));
 
@@ -73,7 +73,7 @@ transform([
  */
 
 $files->copy("{$workingPath}/vendor/laravel/framework/src/WpStarter/Foundation/resources/server.php", "{$workingPath}/laravel/server.php");
-transform([
+ws_transform([
     "getcwd()" => "__DIR__.'/public'",
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/laravel/server.php"));
 
@@ -85,7 +85,7 @@ transform([
 
 $files->copy("{$workingPath}/skeleton/database/factories/UserFactory.php", "{$workingPath}/src/Factories/UserFactory.php");
 
-transform([
+ws_transform([
     'namespace Database\Factories;' => 'namespace Orchestra\Testbench\Factories;',
     'use App\Models\User;' => 'use WpStarter\Foundation\Auth\User;',
     'use WpStarter\Database\Eloquent\Factories\Factory;' => 'use WpStarter\Database\Eloquent\Factories\Factory;',
